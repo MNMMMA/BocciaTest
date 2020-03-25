@@ -1,0 +1,2 @@
+include ':app', ':gtranslateapi-1.0', ':jl1.0'
+rootProject.name='BocciaTest'
