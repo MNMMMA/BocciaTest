@@ -61,9 +61,23 @@ public class BocciaSoundByte extends AppCompatActivity {
 
                 distance = Math.round(distance);
 
-                long y = (long) (1*(distance-0.5)+0.25);
-                    mp.setLooping(true);
-                    handler.postDelayed(runnable, y*100 );
+                long y = (long) bep_rate(distance);
+
+                String toSpeak = "y is "+ y;
+
+                Toast.makeText(getApplicationContext(), toSpeak,Toast.LENGTH_SHORT).show();
+
+                        mp =  MediaPlayer.create(BocciaSoundByte.this,R.raw.bep);
+                        mp.start();
+
+                        handler.postDelayed(runnable, y*300);
+
+                        handler.postDelayed(runnable, y*500);
+
+                        handler.postDelayed(runnable, y*700);
+
+
+
 
 
                     //mp.stop();
@@ -78,28 +92,8 @@ public class BocciaSoundByte extends AppCompatActivity {
     private Runnable runnable = new Runnable() {
         @Override
         public void run() {
-            mp = MediaPlayer.create(BocciaSoundByte.this,R.raw.bep);
-
-            double x1  = Double.parseDouble(inputXCurLoc.getText().toString());
-            double y1 = Double.parseDouble(inputYCurLoc.getText().toString());
-            double x2 = Double.parseDouble(inputXBallLoc.getText().toString());
-            double y2 = Double.parseDouble(inputYBallLoc.getText().toString());
-            double distance = Math.sqrt(Math.pow((x2-x1),2)+Math.pow((y2-y1),2));
-
-
-            int angle = Angle(x1,y1,x1,y2);
-            //mp.setDataSource(this,R.raw.bep);
-
-            //distance = Math.round(distance);
-
-            long y = (long) (1*(distance-0.5)+0.25);
-
-
-            String toSpeak = "y is "+ y;
-            Toast.makeText(getApplicationContext(), toSpeak,Toast.LENGTH_SHORT).show();
 
             play(mp);
-            handler.postDelayed(runnable2, y*200);
         }
     };
 
@@ -110,6 +104,10 @@ public class BocciaSoundByte extends AppCompatActivity {
 
         }
     };
+
+    private double bep_rate(double x){
+        return 0.5*x+1;
+    }
 
 
 

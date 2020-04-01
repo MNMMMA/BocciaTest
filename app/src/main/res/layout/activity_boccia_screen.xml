@@ -6,4 +6,11 @@
     android:layout_height="match_parent"
     tools:context=".BocciaScreen">
 
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="29dp"
+        android:layout_height="18dp"
+        android:text="cxcv"
+        tools:layout_editor_absoluteX="163dp"
+        tools:layout_editor_absoluteY="194dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>
