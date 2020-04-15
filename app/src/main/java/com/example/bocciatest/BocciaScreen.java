@@ -26,29 +26,36 @@ public class BocciaScreen extends AppCompatActivity {
     private int bx =1020,by=540;
     private double trueX,trueY;
     private TextToSpeech t1;
-    private TextView pointField;
-    private SoundPool mp = new SoundPool(5, AudioManager.STREAM_ALARM, 0);
+    private TextView pointField,bText;
+    private MediaPlayer mp = new MediaPlayer();
     Random rand = new Random();
-    boolean flag = true;
+    boolean flag = false;
     private Handler handler = new Handler();
     private int maxVolume = 50;
     private double distance;
     private int angle;
     private long y;
     double Rad2Deg = 180.0 / Math.PI;
-    private int soundId;
+    private int soundId,dedo = 50;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_boccia_screen);
+        pointField = findViewById(R.id.textView6);
+        bText = findViewById(R.id.posclick);
+        bx = rand.nextInt(1080) ;
+        by = rand.nextInt(2040-250)+250 ;
 
-        bx = rand.nextInt(2040) + 1;
-        by = rand.nextInt(1080) + 1;
+        trueX = getW();
+        trueY = getH();
 
-        trueX = getH();
-        trueY = getW();
+        String textS = "x " + bx +" y " + by;
+
+
+
+        pointField.setText(textS);
 
          distance = Math.sqrt(Math.pow((trueX),2)+Math.pow((trueY),2));
 
@@ -89,18 +96,17 @@ public class BocciaScreen extends AppCompatActivity {
         int x = (int)event.getX();
         int y = (int)event.getY();
 
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-            case MotionEvent.ACTION_MOVE:
-            case MotionEvent.ACTION_UP:
-        }
+        String posT = "x " + x +" y " + y;
+        bText.setText(posT);
 
+        if ( event.getAction()!= MotionEvent.ACTION_DOWN)
+            return false;
         if (!flag) {
+
+        if (Math.abs(x-bx) < dedo  && Math.abs(y-by) <dedo){
+
             flag = true;
-
-
-        if ((bx+25 < x || bx-25 > x) &&(by+25 < y || by-25 > y)){
-          // mp =  MediaPlayer.create(BocciaScreen.this,R.raw.bep);
+          mp =  MediaPlayer.create(BocciaScreen.this,R.raw.bep);
 
             //mp.setVolume((float) (Math.cos(angle) +1)/2,(1-(float) Math.cos(angle))/2);
 
@@ -112,8 +118,9 @@ public class BocciaScreen extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), toSpeak,Toast.LENGTH_SHORT).show();
             t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
 
-            soundId = mp.load(BocciaScreen.this,R.raw.bep, 1);
+           // soundId = mp.load(BocciaScreen.this,R.raw.bep, 1);
             runnable.run();
+
             return false;
 
         }
@@ -128,11 +135,11 @@ public class BocciaScreen extends AppCompatActivity {
 
     double getH(){
 
-        return ((bx * 12.5) / 2040);
+        return ((2040-by-250.0) / 2040)*10;
     }
 
     double getW(){
-        return ((by*6.0)/1020);
+        return ((bx*6.0)/1080);
     }
 
     private Runnable runnable = new Runnable() {
@@ -141,7 +148,7 @@ public class BocciaScreen extends AppCompatActivity {
             if(!flag){
                 return;
             }
-            mp.play(soundId,  (float) (Math.cos(angle) +1), (1-(float) Math.cos(angle)), 0, 0, 1);
+            mp.start();
             handler.postDelayed(runnable, y*300);
         }
     };
