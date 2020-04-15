@@ -24,6 +24,8 @@ public class BocciaSoundByte extends AppCompatActivity {
     private MediaPlayer mp = new MediaPlayer();
     private Handler handler = new Handler();
     double Rad2Deg = 180.0 / Math.PI;
+    long y;
+    boolean flag =  false;
 
 
     @Override
@@ -49,6 +51,8 @@ public class BocciaSoundByte extends AppCompatActivity {
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!flag){
+                    flag =true;
 
                 double x1  = Double.parseDouble(inputXCurLoc.getText().toString());
                 double y1 = Double.parseDouble(inputYCurLoc.getText().toString());
@@ -61,21 +65,19 @@ public class BocciaSoundByte extends AppCompatActivity {
 
                 distance = Math.round(distance);
 
-                long y = (long) bep_rate(distance);
+                 y = (long) bep_rate(distance);
 
                 String toSpeak = "y is "+ y;
 
                 Toast.makeText(getApplicationContext(), toSpeak,Toast.LENGTH_SHORT).show();
 
                         mp =  MediaPlayer.create(BocciaSoundByte.this,R.raw.bep);
-                        mp.start();
+                        runnable.run();
 
-                        handler.postDelayed(runnable, y*300);
-
-                        handler.postDelayed(runnable, y*500);
-
-                        handler.postDelayed(runnable, y*700);
-
+                       // handler.postDelayed(runnable, y*300);
+                }else{
+                    flag = false;
+                }
 
 
 
@@ -92,29 +94,19 @@ public class BocciaSoundByte extends AppCompatActivity {
     private Runnable runnable = new Runnable() {
         @Override
         public void run() {
-
-            play(mp);
+            if(!flag){
+            return;
+            }
+            mp.start();
+            handler.postDelayed(runnable, y*300);
         }
     };
 
-    private Runnable runnable2 = new Runnable() {
-        @Override
-        public void run() {
-            mp.stop();
-
-        }
-    };
 
     private double bep_rate(double x){
         return 0.5*x+1;
     }
 
-
-
-    private void play(MediaPlayer mp){
-            mp.start();
-
-    }
     private int Angle( double x1  , double y1 , double x2,double y2)
     {
         return (int) (Math.atan(y2-y1/x2-x1) * Rad2Deg);
