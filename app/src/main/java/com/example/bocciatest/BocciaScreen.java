@@ -77,8 +77,8 @@ public class BocciaScreen extends AppCompatActivity {
 
 
 
-        buttonRed.setX(rand.nextInt(width));
-        buttonRed.setY(rand.nextInt(height));
+        buttonRed.setX(0);
+        buttonRed.setY(0);
 
         buttonBlack.setX(rand.nextInt(width));
         buttonBlack.setY(rand.nextInt(height));
@@ -271,7 +271,10 @@ public class BocciaScreen extends AppCompatActivity {
     };
     private int Angle( double x1  , double y1 , double x2,double y2)
     {
-        return (int) (Math.atan(y2-y1/x2-x1) * Rad2Deg);
+
+        double deltaX = x2 - x1;
+        double deltaY = y2 - y1;
+        return (int) (Math.atan2(deltaY, deltaX) * Rad2Deg);
     }
 
     private double bep_rate(double x){
