@@ -1,55 +1,46 @@
 package com.example.bocciatest;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.res.ResourcesCompat;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
-import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.media.SoundPool;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.speech.tts.TextToSpeech;
-import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.TextView;
 import android.widget.Toast;
+
 
 import java.util.Locale;
 import java.util.Random;
 
 public class BocciaScreen extends AppCompatActivity {
-    private int mActivePointerId;
-    private int bx =1020,by=540;
-    private double trueX,trueY;
+
+    private int bx,by;
     private TextToSpeech t1;
     private MediaPlayer mp = new MediaPlayer();
     Random rand = new Random();
     boolean flag = false;
     private Handler handler = new Handler();
-    private int maxVolume = 50;
     private double distance;
     private int angle;
     private long y;
     double Rad2Deg = 180.0 / Math.PI;
-    private int soundId,dedo = 50;
+    float screenX,screenY;
+    private int radius = 50;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+FullScreencall();
 
         final Locale myLocale = new Locale("pt", "PT");
 
@@ -61,223 +52,146 @@ public class BocciaScreen extends AppCompatActivity {
                 }
             }
         });
-        setContentView(R.layout.activity_boccia_screen);
-        //setContentView(new MyView(this));
-
-        final ImageButton buttonRed =  findViewById(R.id.redB);
-        final ImageButton buttonBlue =  findViewById(R.id.blueB);
-        final ImageButton buttonBlack =  findViewById(R.id.blackB);
+       // setContentView(R.layout.activity_boccia_screen);
+        setContentView(new MyView(this));
 
 
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
-        int width = size.x;
-        int height = size.y;
+        screenX = size.x;
+        screenY = size.y;
 
 
-
-        buttonRed.setX(0);
-        buttonRed.setY(0);
-
-        buttonBlack.setX(rand.nextInt(width));
-        buttonBlack.setY(rand.nextInt(height));
-
-
-
-        buttonBlue.setX(rand.nextInt(width));
-        buttonBlue.setY(rand.nextInt(height));
-
-
-
-        buttonRed.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!flag){
-                    flag =true;
-                    trueX = getW(buttonRed.getX());
-                    trueY = getH(buttonRed.getY());
-                    angle = Angle(0,0,trueX,trueY);
-
-
-
-                    distance = Math.sqrt(Math.pow((trueX),2)+Math.pow((trueY),2));
-                    String distS = String.format("%.2f", distance);
-
-                    y = (long) bep_rate(distance);
-
-                    mp =  MediaPlayer.create(BocciaScreen.this,R.raw.bep);
-
-
-                    String toSpeak = " A bola vermelha esta a " + distS +  " metros e num angulo de " + angle;
-
-                    Toast.makeText(getApplicationContext(), toSpeak,Toast.LENGTH_SHORT).show();
-                    t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
-
-                    runnable.run();
-
-                }else{
-                    flag = false;
-                }
-
-            }
-        });
-
-        buttonBlue.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!flag){
-                    flag =true;
-                    trueX = getW(buttonBlue.getX());
-                    trueY = getH(buttonBlue.getY());
-                    angle = Angle(0,0,trueX,trueY);
-
-
-
-                    distance = Math.sqrt(Math.pow((trueX),2)+Math.pow((trueY),2));
-                    String distS = String.format("%.2f", distance);
-
-                    y = (long) bep_rate(distance);
-
-                    mp =  MediaPlayer.create(BocciaScreen.this,R.raw.bep);
-
-
-                    String toSpeak = " A bola azul esta a " + distS +  " metros e num angulo de " + angle;
-
-                    Toast.makeText(getApplicationContext(), toSpeak,Toast.LENGTH_SHORT).show();
-                    t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
-
-                    runnable.run();
-
-                }else{
-                    flag = false;
-                }
-
-            }
-        });
-
-        buttonBlack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!flag){
-                    flag =true;
-
-
-                    trueX = getW(buttonBlack.getX());
-                    trueY = getH(buttonBlack.getY());
-                    angle = Angle(0,0,trueX,trueY);
-
-
-                    distance = Math.sqrt(Math.pow((trueX),2)+Math.pow((trueY),2));
-                    String distS = String.format("%.2f", distance);
-
-                    y = (long) bep_rate(distance);
-
-                    mp =  MediaPlayer.create(BocciaScreen.this,R.raw.bep);
-
-
-                    String toSpeak = " A bola preta esta a " + distS +  " metros e num angulo de " + angle;
-
-                    Toast.makeText(getApplicationContext(), toSpeak,Toast.LENGTH_SHORT).show();
-                    t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
-
-                    runnable.run();
-
-                }else{
-                    flag = false;
-                }
-
-            }
-        });
-
-
-
-/*
-
-         angle = Angle(0,0,trueX,trueY);
-        //distance = Math.round(distance);
-        // int trueDist = (int) distance;
-        String distS = String.format("%.2f", distance);
-
-        y = (long) bep_rate(distance);
-
-*/
 
     }
 
-   /* @Override
-    public boolean onTouchEvent(MotionEvent event)
-    {
-        int x = (int)event.getX();
-        int y = (int)event.getY();
 
-        String posT = "x " + x +" y " + y;
-        bText.setText(posT);
+    public class MyView extends View {
+        Paint paint = null;
+        long rate;
 
-        if ( event.getAction()!= MotionEvent.ACTION_DOWN)
-            return false;
-        if (!flag) {
+        public MyView(Context context) {
+            super(context);
+            paint = new Paint();
 
-        if (Math.abs(x-bx) < dedo  && Math.abs(y-by) <dedo){
+        }
 
-            flag = true;
-          mp =  MediaPlayer.create(BocciaScreen.this,R.raw.bep);
+        @Override
+        protected void onDraw(Canvas canvas) {
+            super.onDraw(canvas);
+            int x = getWidth();
+            int y = getHeight();
 
-            //mp.setVolume((float) (Math.cos(angle) +1)/2,(1-(float) Math.cos(angle))/2);
+            paint.setStyle(Paint.Style.FILL);
+            paint.setColor(Color.WHITE);
+            canvas.drawPaint(paint);
+
+            paint.setColor(Color.RED);
 
 
+            bx = rand.nextInt(x);
+            by =  rand.nextInt(y);
 
-            String distS = String.format("%.2f", distance);
-            String toSpeak = " A bola esta a " + distS +  " metros e num angulo de " + angle;
 
-            Toast.makeText(getApplicationContext(), toSpeak,Toast.LENGTH_SHORT).show();
-            t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
+            canvas.drawCircle(bx, by, radius, paint);
 
-           // soundId = mp.load(BocciaScreen.this,R.raw.bep, 1);
-            runnable.run();
+        }
+
+        @Override
+        public boolean onTouchEvent(MotionEvent event) {
+
+
+            int x = (int) event.getX();
+            int y = (int) event.getY();
+
+            if (event.getAction() != MotionEvent.ACTION_DOWN)
+                return false;
+
+
+                    if (Math.abs(x - bx) < radius && Math.abs(y - by) < radius) {
+
+                        flag = true;
+
+                        distance = Math.sqrt(Math.pow(bx, 2) + Math.pow(by, 2));
+
+                        //mp.setVolume((float) (Math.cos(angle) +1)/2,(1-(float) Math.cos(angle))/2);
+
+                        angle = Angle(bx,by);
+
+                        String toSpeak = " A bola está aqui";
+
+                        Toast.makeText(getApplicationContext(), toSpeak, Toast.LENGTH_SHORT).show();
+                        t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
+
+                        return false;
+                }else{
+
+                        double dx = getH(bx-x);
+                        double dy =  getW(by-y);
+
+
+                        String dirH = "";
+                        String dirV = "";
+                        if(dx > 0){
+                            dirH = "esquerda";
+
+                        }else if(dx < 0){
+                            dirH = "direita";
+                            dx=dx*-1;
+                        }else{
+                            dirH = "";
+                        }
+
+                        if(dy > 0){
+                            dirV = "acima";
+
+                        }else if(dy < 0){
+                            dirV = "baixo";
+                            dy=dy*-1;
+                        }else{
+                            dirV = "";
+                        }
+
+                        String distx = String.format("%.2f",dx);
+                        String disty = String.format("%.2f",dy);
+
+                        String toSpeak = " A bola está á " + distx + " metros "+ dirH +" e está á "+ disty +" metros para "+ dirV;
+                        Toast.makeText(getApplicationContext(), toSpeak, Toast.LENGTH_SHORT).show();
+                        t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
+                    }
 
             return false;
 
         }
-
-        } else{
-        flag = false;
     }
-
-        return false;
-
-    }*/
 
     double getH(float x){
 
-        return ((2040-x) / 2040.0)*10;
+        return ((x*10.0) / screenY);
     }
 
     double getW(float y){
-        return ((y*6.0)/1080);
+        return ((y*6.0)/screenX);
     }
 
-    private Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-            if(!flag){
-                return;
-            }
 
-            mp.setVolume((float)0.1, (float)0.9);
-            mp.start();
-            handler.postDelayed(runnable, y*300);
-        }
-    };
-    private int Angle( double x1  , double y1 , double x2,double y2)
+    private int Angle( double x2,double y2)
     {
-
-        double deltaX = x2 - x1;
-        double deltaY = y2 - y1;
-        return (int) (Math.atan2(deltaY, deltaX) * Rad2Deg);
+        return (int) (Math.atan2(y2,x2) * Rad2Deg);
     }
 
-    private double bep_rate(double x){
-        return 0.5*x+1;
+    public void FullScreencall() {
+        if(Build.VERSION.SDK_INT > 11 && Build.VERSION.SDK_INT < 19) { // lower api
+            View v = this.getWindow().getDecorView();
+            v.setSystemUiVisibility(View.GONE);
+        } else if(Build.VERSION.SDK_INT >= 19) {
+            //for new api versions.
+            View decorView = getWindow().getDecorView();
+            int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+            decorView.setSystemUiVisibility(uiOptions);
+        }
     }
+
+
 }

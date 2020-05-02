@@ -3,8 +3,6 @@ package com.example.bocciatest;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.media.MediaPlayer;
@@ -14,13 +12,12 @@ import android.speech.tts.TextToSpeech;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Toast;
 
 import java.util.Locale;
 import java.util.Random;
 
+public class TestBepActivity extends AppCompatActivity {
 
-public class BocciaSoundByte extends AppCompatActivity {
 
     private float bx, by;
     private TextToSpeech t1;
@@ -39,7 +36,7 @@ public class BocciaSoundByte extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(new MyView(this));
+        setContentView(new TestBepActivity.MyView(this));
 
         final Locale myLocale = new Locale("pt", "PT");
 
@@ -70,25 +67,6 @@ public class BocciaSoundByte extends AppCompatActivity {
             paint = new Paint();
         }
 
-        @Override
-        protected void onDraw(Canvas canvas) {
-            super.onDraw(canvas);
-            int x = getWidth();
-            int y = getHeight();
-            int radius;
-            radius = 50;
-            paint.setStyle(Paint.Style.FILL);
-            paint.setColor(Color.WHITE);
-            canvas.drawPaint(paint);
-
-            paint.setColor(Color.RED);
-
-            bx = rand.nextInt(x);
-            by =  rand.nextInt(y);
-
-            canvas.drawCircle(bx, by, radius, paint);
-        }
-
         private double bep_rate(double x) {
             return 0.5 * x + 1;
         }
@@ -116,29 +94,16 @@ public class BocciaSoundByte extends AppCompatActivity {
             if (event.getAction() != MotionEvent.ACTION_DOWN)
                 return false;
 
-                if ( Math.abs(y - by) < radius) {
-                    mp.stop();
-                        flag = false;
-                    String toSpeak = " A bola esta aqui";
+                mp = MediaPlayer.create(TestBepActivity.this, R.raw.bep);
+                distance = Math.sqrt(Math.pow(getW(y), 2));
+                flag = true;
+                //mp.setVolume((float) (Math.cos(angle) +1)/2,(1-(float) Math.cos(angle))/2);
+                angle = Angle(bx,by);
 
-                    Toast.makeText(getApplicationContext(), toSpeak, Toast.LENGTH_SHORT).show();
-                    t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
+                rate = (long) bep_rate(distance);
 
-                        return false;
-
-                    }else{
-                    mp = MediaPlayer.create(BocciaSoundByte.this, R.raw.bep);
-                    distance = Math.sqrt(Math.pow(getW(by-y), 2));
-                    flag = true;
-                    //mp.setVolume((float) (Math.cos(angle) +1)/2,(1-(float) Math.cos(angle))/2);
-                    angle = Angle(bx,by);
-
-                    rate = (long) bep_rate(distance);
-
-                    runnable.run();
+                runnable.run();
                 return false;
-                }
-
         }
     }
 
@@ -156,6 +121,5 @@ public class BocciaSoundByte extends AppCompatActivity {
     {
         return (int) (Math.atan2(y2,x2) * Rad2Deg);
     }
-
 
 }

@@ -16,54 +16,29 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/textView4"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="X Current position" />
-
-            <EditText
-                android:id="@+id/currentPx"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:inputType="numberDecimal" />
-
-            <TextView
-                android:id="@+id/textView5"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Y Current Position" />
-
-            <EditText
-                android:id="@+id/currentPy"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:inputType="numberDecimal" />
-
             <Button
                 android:id="@+id/button"
-                android:layout_width="421dp"
-                android:layout_height="wrap_content"
-                android:text="Locate" />
+                android:layout_width="420dp"
+                android:layout_height="180dp"
+                android:text="TTS Random" />
 
             <Button
                 android:id="@+id/button2"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Bep" />
+                android:layout_height="180dp"
+                android:text="Bep Random" />
 
             <Button
                 android:id="@+id/button3"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Sensor" />
+                android:layout_height="180dp"
+                android:text="TTS Test" />
 
-            <TextView
-                android:id="@+id/json"
+            <Button
+                android:id="@+id/button4"
                 android:layout_width="match_parent"
-                android:layout_height="376dp" />
+                android:layout_height="180dp"
+                android:text="Bep Test" />
 
 
         </LinearLayout>
