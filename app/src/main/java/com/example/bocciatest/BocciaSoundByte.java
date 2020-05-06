@@ -32,21 +32,21 @@ public class BocciaSoundByte extends AppCompatActivity {
     private int angle;
     double Rad2Deg = 180.0 / Math.PI;
     private int radius = 50, width, height;
-
-
+    private MyView view;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(new MyView(this));
+        view = new MyView(this);
+        setContentView(view);
 
         final Locale myLocale = new Locale("pt", "PT");
 
-        t1=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+        t1 = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
-                if(status != TextToSpeech.ERROR) {
+                if (status != TextToSpeech.ERROR) {
                     t1.setLanguage(myLocale);
                 }
             }
@@ -61,8 +61,36 @@ public class BocciaSoundByte extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mp.stop();
+    }
+
+
+    double getH(float y) {
+        return ((y * 10.0) / height);
+    }
+
+    double getW(float x) {
+        return ((x * 6.0) / width);
+    }
+
+
+    private int Angle(double x2, double y2) {
+        return (int) (Math.atan2(y2, x2) * Rad2Deg);
+    }
+
+    @Override
+    public void onBackPressed() {
+        view.stopRepeatingTask();
+        mp.stop();
+        super.onBackPressed();
+    }
+
+
     public class MyView extends View {
-        Paint paint = null;
+        Paint paint;
         long rate;
 
         public MyView(Context context) {
@@ -84,7 +112,7 @@ public class BocciaSoundByte extends AppCompatActivity {
             paint.setColor(Color.RED);
 
             bx = rand.nextInt(x);
-            by =  rand.nextInt(y);
+            by = rand.nextInt(y);
 
             canvas.drawCircle(bx, by, radius, paint);
         }
@@ -93,7 +121,10 @@ public class BocciaSoundByte extends AppCompatActivity {
             return 0.5 * x + 1;
         }
 
-        private Runnable runnable = new Runnable() {
+        // TODO: consultar https://stackoverflow.com/questions/6242268/repeat-a-task-with-a-time-delay
+        //  e implementar de forma mais correta o som repetido.
+
+        public Runnable runnable = new Runnable() {
             @Override
             public void run() {
                 if (!flag) {
@@ -106,6 +137,10 @@ public class BocciaSoundByte extends AppCompatActivity {
             }
         };
 
+        public void stopRepeatingTask() {
+            handler.removeCallbacks(runnable);
+        }
+
         @Override
         public boolean onTouchEvent(MotionEvent event) {
 
@@ -116,46 +151,37 @@ public class BocciaSoundByte extends AppCompatActivity {
             if (event.getAction() != MotionEvent.ACTION_DOWN)
                 return false;
 
-                if ( Math.abs(y - by) < radius) {
-                    mp.stop();
-                        flag = false;
-                    String toSpeak = " A bola esta aqui";
+            if (Math.abs(y - by) < radius) {
+                mp.stop();
+                flag = false;
 
-                    Toast.makeText(getApplicationContext(), toSpeak, Toast.LENGTH_SHORT).show();
-                    t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
+                // TODO: substituir todas as strings hard-coded por referências a resources
+                String toSpeak = "A bola está aí mesmo";
 
-                        return false;
+                Toast.makeText(getApplicationContext(), toSpeak, Toast.LENGTH_SHORT).show();
+                t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
 
-                    }else{
-                    mp = MediaPlayer.create(BocciaSoundByte.this, R.raw.bep);
-                    distance = Math.sqrt(Math.pow(getW(by-y), 2));
-                    flag = true;
-                    //mp.setVolume((float) (Math.cos(angle) +1)/2,(1-(float) Math.cos(angle))/2);
-                    angle = Angle(bx,by);
-
-                    rate = (long) bep_rate(distance);
-
-                    runnable.run();
                 return false;
-                }
+
+            } else {
+                mp = MediaPlayer.create(BocciaSoundByte.this, R.raw.bep);
+                // distance = Math.sqrt(Math.pow(getW(by - y), 2));
+                distance = getH(by - y);
+                flag = true;
+                angle = Angle(bx, by);
+                //mp.setVolume((float) (Math.cos(angle) +1)/2,(1-(float) Math.cos(angle))/2);
+
+                rate = (long) bep_rate(distance);
+
+                runnable.run();
+                return false;
+            }
 
         }
     }
 
-    double getH(float y){
-
-        return ((y*10.0) /height);
-    }
-
-    double getW(float x){
-        return ((x*6.0)/width);
-    }
-
-
-    private int Angle( double x2,double y2)
-    {
-        return (int) (Math.atan2(y2,x2) * Rad2Deg);
-    }
-
-
 }
+
+
+
+

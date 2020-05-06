@@ -18,7 +18,7 @@ import java.util.Locale;
 public class TestTTSActivity extends AppCompatActivity {
 
     private TextToSpeech t1;
-    float screenX,screenY;
+    float screenX, screenY;
 
 
     @Override
@@ -28,10 +28,10 @@ public class TestTTSActivity extends AppCompatActivity {
 
         final Locale myLocale = new Locale("pt", "PT");
 
-        t1=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+        t1 = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
-                if(status != TextToSpeech.ERROR) {
+                if (status != TextToSpeech.ERROR) {
                     t1.setLanguage(myLocale);
                 }
             }
@@ -47,7 +47,6 @@ public class TestTTSActivity extends AppCompatActivity {
         screenY = size.y;
 
 
-
     }
 
 
@@ -61,47 +60,44 @@ public class TestTTSActivity extends AppCompatActivity {
 
         }
 
-        }
-
-        @Override
-        public boolean onTouchEvent(MotionEvent event) {
-
-
-            int x = (int) event.getX();
-            int y = (int) event.getY();
-
-            if (event.getAction() != MotionEvent.ACTION_DOWN)
-                return false;
-
-
-                String sx = String.format("%.2f",getW(x));
-
-                String sy = String.format("%.2f",getH(y));
-
-                String toSpeak = " O dedo está na posiçao horizontal "+ sx +" e está na posição vertical "+ sy;
-
-                Toast.makeText(getApplicationContext(), toSpeak, Toast.LENGTH_SHORT).show();
-                t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
-
-                return false;
-
-
-        }
-
-    double getH(float y){
-
-        return ((y*10.0) /screenY);
     }
 
-    double getW(float x){
-        return ((x*6.0)/screenX);
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+
+
+        double x = getW(event.getX());
+        double y = getH(event.getY());
+
+        if (event.getAction() != MotionEvent.ACTION_DOWN)
+            return false;
+
+        // TODO: substituir todas as strings hard-coded por referências a resources
+        String toSpeak = String.format("O dedo está à %.2f metros na horizontal e %.2f metros na vertical",
+                x, y);
+
+        Toast.makeText(getApplicationContext(), toSpeak, Toast.LENGTH_SHORT).show();
+        t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
+
+        return false;
+
+
+    }
+
+    double getH(float y) {
+
+        return ((y * 10.0) / screenY);
+    }
+
+    double getW(float x) {
+        return ((x * 6.0) / screenX);
     }
 
     public void FullScreencall() {
-        if(Build.VERSION.SDK_INT > 11 && Build.VERSION.SDK_INT < 19) { // lower api
+        if (Build.VERSION.SDK_INT > 11 && Build.VERSION.SDK_INT < 19) { // lower api
             View v = this.getWindow().getDecorView();
             v.setSystemUiVisibility(View.GONE);
-        } else if(Build.VERSION.SDK_INT >= 19) {
+        } else if (Build.VERSION.SDK_INT >= 19) {
             //for new api versions.
             View decorView = getWindow().getDecorView();
             int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;

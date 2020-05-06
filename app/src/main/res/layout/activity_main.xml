@@ -13,26 +13,26 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <Button
                 android:id="@+id/button"
-                android:layout_width="420dp"
+                android:layout_width="match_parent"
                 android:layout_height="180dp"
-                android:text="TTS Random" />
+                android:text="Text-To-Speech Localization" />
 
             <Button
                 android:id="@+id/button2"
                 android:layout_width="match_parent"
-                android:layout_height="180dp"
-                android:text="Bep Random" />
+                android:layout_height="185dp"
+                android:text="Bep Localization" />
 
             <Button
                 android:id="@+id/button3"
                 android:layout_width="match_parent"
                 android:layout_height="180dp"
-                android:text="TTS Test" />
+                android:text="Text-To-Speech Test" />
 
             <Button
                 android:id="@+id/button4"

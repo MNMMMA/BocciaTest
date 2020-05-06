@@ -23,7 +23,7 @@ import java.util.Random;
 
 public class BocciaScreen extends AppCompatActivity {
 
-    private int bx,by;
+    private int bx, by;
     private TextToSpeech t1;
     private MediaPlayer mp = new MediaPlayer();
     Random rand = new Random();
@@ -33,26 +33,26 @@ public class BocciaScreen extends AppCompatActivity {
     private int angle;
     private long y;
     double Rad2Deg = 180.0 / Math.PI;
-    float screenX,screenY;
+    float screenX, screenY;
     private int radius = 50;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-FullScreencall();
+        FullScreencall();
 
         final Locale myLocale = new Locale("pt", "PT");
 
-        t1=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+        t1 = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
-                if(status != TextToSpeech.ERROR) {
+                if (status != TextToSpeech.ERROR) {
                     t1.setLanguage(myLocale);
                 }
             }
         });
-       // setContentView(R.layout.activity_boccia_screen);
+        // setContentView(R.layout.activity_boccia_screen);
         setContentView(new MyView(this));
 
 
@@ -63,12 +63,11 @@ FullScreencall();
         screenY = size.y;
 
 
-
     }
 
 
     public class MyView extends View {
-        Paint paint = null;
+        Paint paint;
         long rate;
 
         public MyView(Context context) {
@@ -91,7 +90,7 @@ FullScreencall();
 
 
             bx = rand.nextInt(x);
-            by =  rand.nextInt(y);
+            by = rand.nextInt(y);
 
 
             canvas.drawCircle(bx, by, radius, paint);
@@ -109,83 +108,87 @@ FullScreencall();
                 return false;
 
 
-                    if (Math.abs(x - bx) < radius && Math.abs(y - by) < radius) {
+            if (Math.abs(x - bx) < radius && Math.abs(y - by) < radius) {
 
-                        flag = true;
+                flag = true;
 
-                        distance = Math.sqrt(Math.pow(bx, 2) + Math.pow(by, 2));
+                distance = Math.sqrt(Math.pow(bx, 2) + Math.pow(by, 2));
 
-                        //mp.setVolume((float) (Math.cos(angle) +1)/2,(1-(float) Math.cos(angle))/2);
+                //mp.setVolume((float) (Math.cos(angle) +1)/2,(1-(float) Math.cos(angle))/2);
 
-                        angle = Angle(bx,by);
+                angle = Angle(bx, by);
 
-                        String toSpeak = " A bola está aqui";
+                // TODO: substituir todas as strings hard-coded por referências a resources
+                String toSpeak = "A bola está aí mesmo";
 
-                        Toast.makeText(getApplicationContext(), toSpeak, Toast.LENGTH_SHORT).show();
-                        t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
+                Toast.makeText(getApplicationContext(), toSpeak, Toast.LENGTH_SHORT).show();
+                t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
 
-                        return false;
-                }else{
+                return false;
+            } else {
 
-                        double dx = getH(bx-x);
-                        double dy =  getW(by-y);
+                double dx = getH(bx - x);
+                double dy = getW(by - y);
 
 
-                        String dirH = "";
-                        String dirV = "";
-                        if(dx > 0){
-                            dirH = "esquerda";
+                String dirH = "";
+                String dirV = "";
 
-                        }else if(dx < 0){
-                            dirH = "direita";
-                            dx=dx*-1;
-                        }else{
-                            dirH = "";
-                        }
+                // TODO: substituir todas as strings hard-coded por referências a resources
+                if (dx > 0) {
+                    dirH = "direita";
+                } else if (dx < 0) {
+                    dirH = "esquerda";
+                    dx = -dx;
+                }
+                if (dy > 0) {
+                    dirV = "baixo";
 
-                        if(dy > 0){
-                            dirV = "acima";
+                } else if (dy < 0) {
+                    dirV = "acima";
+                    dy = -dy;
+                }
 
-                        }else if(dy < 0){
-                            dirV = "baixo";
-                            dy=dy*-1;
-                        }else{
-                            dirV = "";
-                        }
+                // TODO: substituir todas as strings hard-coded por referências a resources
+                //  e usar String.format() para adicionar eventuais parâmetros
+                String toSpeak = String.format(
+                        "A bola está a %.2f metros mais a %s e %.2f mais %s",
+                        dx, dirH,
+                        dy, dirV
+                );
 
-                        String distx = String.format("%.2f",dx);
-                        String disty = String.format("%.2f",dy);
+                // TODO: criar mensagens diferenciadas para os casos:
+                //  dx == 0, dy != 0
+                //  dx != 0, dy == 0
 
-                        String toSpeak = " A bola está á " + distx + " metros "+ dirH +" e está á "+ disty +" metros para "+ dirV;
-                        Toast.makeText(getApplicationContext(), toSpeak, Toast.LENGTH_SHORT).show();
-                        t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
-                    }
+                Toast.makeText(getApplicationContext(), toSpeak, Toast.LENGTH_SHORT).show();
+                t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
+            }
 
             return false;
 
         }
     }
 
-    double getH(float x){
+    double getH(float x) {
 
-        return ((x*10.0) / screenY);
+        return ((x * 10.0) / screenY);
     }
 
-    double getW(float y){
-        return ((y*6.0)/screenX);
+    double getW(float y) {
+        return ((y * 6.0) / screenX);
     }
 
 
-    private int Angle( double x2,double y2)
-    {
-        return (int) (Math.atan2(y2,x2) * Rad2Deg);
+    private int Angle(double x2, double y2) {
+        return (int) (Math.atan2(y2, x2) * Rad2Deg);
     }
 
     public void FullScreencall() {
-        if(Build.VERSION.SDK_INT > 11 && Build.VERSION.SDK_INT < 19) { // lower api
+        if (Build.VERSION.SDK_INT > 11 && Build.VERSION.SDK_INT < 19) { // lower api
             View v = this.getWindow().getDecorView();
             v.setSystemUiVisibility(View.GONE);
-        } else if(Build.VERSION.SDK_INT >= 19) {
+        } else if (Build.VERSION.SDK_INT >= 19) {
             //for new api versions.
             View decorView = getWindow().getDecorView();
             int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
@@ -195,3 +198,4 @@ FullScreencall();
 
 
 }
+
