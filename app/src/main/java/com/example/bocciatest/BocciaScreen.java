@@ -21,181 +21,83 @@ import android.widget.Toast;
 import java.util.Locale;
 import java.util.Random;
 
-public class BocciaScreen extends AppCompatActivity {
-
-    private int bx, by;
-    private TextToSpeech t1;
-    private MediaPlayer mp = new MediaPlayer();
-    Random rand = new Random();
-    boolean flag = false;
-    private Handler handler = new Handler();
-    private double distance;
-    private int angle;
-    private long y;
-    double Rad2Deg = 180.0 / Math.PI;
-    float screenX, screenY;
-    private int radius = 50;
-
+public class BocciaScreen extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
-        FullScreencall();
+        MyViewDrawBall myView = new MyViewDrawBall(this, bx, by, flag);
 
-        final Locale myLocale = new Locale("pt", "PT");
-
-        t1 = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int status) {
-                if (status != TextToSpeech.ERROR) {
-                    t1.setLanguage(myLocale);
-                }
-            }
-        });
         // setContentView(R.layout.activity_boccia_screen);
-        setContentView(new MyView(this));
-
-
-        Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        screenX = size.x;
-        screenY = size.y;
-
+        setContentView(myView);
 
     }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
 
-    public class MyView extends View {
-        Paint paint;
-        long rate;
+        int x = (int) event.getX();
+        int y = (int) event.getY();
 
-        public MyView(Context context) {
-            super(context);
-            paint = new Paint();
-
-        }
-
-        @Override
-        protected void onDraw(Canvas canvas) {
-            super.onDraw(canvas);
-            int x = getWidth();
-            int y = getHeight();
-
-            paint.setStyle(Paint.Style.FILL);
-            paint.setColor(Color.WHITE);
-            canvas.drawPaint(paint);
-
-            paint.setColor(Color.RED);
-
-
-            bx = rand.nextInt(x);
-            by = rand.nextInt(y);
-
-
-            canvas.drawCircle(bx, by, radius, paint);
-
-        }
-
-        @Override
-        public boolean onTouchEvent(MotionEvent event) {
-
-
-            int x = (int) event.getX();
-            int y = (int) event.getY();
-
-            if (event.getAction() != MotionEvent.ACTION_DOWN)
-                return false;
-
-
-            if (Math.abs(x - bx) < radius && Math.abs(y - by) < radius) {
-
-                flag = true;
-
-                distance = Math.sqrt(Math.pow(bx, 2) + Math.pow(by, 2));
-
-                //mp.setVolume((float) (Math.cos(angle) +1)/2,(1-(float) Math.cos(angle))/2);
-
-                angle = Angle(bx, by);
-
-                // TODO: substituir todas as strings hard-coded por referências a resources
-                String toSpeak = "A bola está aí mesmo";
-
-                Toast.makeText(getApplicationContext(), toSpeak, Toast.LENGTH_SHORT).show();
-                t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
-
-                return false;
-            } else {
-
-                double dx = getH(bx - x);
-                double dy = getW(by - y);
-
-
-                String dirH = "";
-                String dirV = "";
-
-                // TODO: substituir todas as strings hard-coded por referências a resources
-                if (dx > 0) {
-                    dirH = "direita";
-                } else if (dx < 0) {
-                    dirH = "esquerda";
-                    dx = -dx;
-                }
-                if (dy > 0) {
-                    dirV = "baixo";
-
-                } else if (dy < 0) {
-                    dirV = "acima";
-                    dy = -dy;
-                }
-
-                // TODO: substituir todas as strings hard-coded por referências a resources
-                //  e usar String.format() para adicionar eventuais parâmetros
-                String toSpeak = String.format(
-                        "A bola está a %.2f metros mais a %s e %.2f mais %s",
-                        dx, dirH,
-                        dy, dirV
-                );
-
-                // TODO: criar mensagens diferenciadas para os casos:
-                //  dx == 0, dy != 0
-                //  dx != 0, dy == 0
-
-                Toast.makeText(getApplicationContext(), toSpeak, Toast.LENGTH_SHORT).show();
-                t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
-            }
-
+        if (event.getAction() != MotionEvent.ACTION_DOWN)
             return false;
 
+        if (Math.abs(x - bx) < radius && Math.abs(y - by) < radius) {
+
+            flag = true;
+
+            distance = Math.sqrt(Math.pow(bx, 2) + Math.pow(by, 2));
+
+            //mp.setVolume((float) (Math.cos(angle) +1)/2,(1-(float) Math.cos(angle))/2);
+
+            angle = Angle(bx, by);
+
+
+            Toast.makeText(getApplicationContext(), A_BOLA_ESTÁ_AÍ_MESMO, Toast.LENGTH_SHORT).show();
+            t1.speak(A_BOLA_ESTÁ_AÍ_MESMO, TextToSpeech.QUEUE_FLUSH, null);
+
+            return false;
+        } else {
+
+            double dx = getH(bx - x);
+            double dy = getW(by - y);
+
+
+            String dirH = "";
+            String dirV = "";
+
+            // TODO: substituir todas as strings hard-coded por referências a resources
+            if (dx > 0) {
+                dirH = DIREITA;
+            } else if (dx < 0) {
+                dirH = ESQUERDA;
+                dx = -dx;
+            }
+            if (dy > 0) {
+                dirV = BAIXO;
+
+            } else if (dy < 0) {
+                dirV = CIMA;
+                dy = -dy;
+            }
+
+            String toSpeak = String.format(
+                    A_BOLA_ESTÁ_HÁ_2_F_METROS_CENTIMETROS_HÁ_S_E_2_F_METROS_CENTIMETROS_PARA_S,
+                    dx, dirH,
+                    dy, dirV
+            );
+
+            // TODO: criar mensagens diferenciadas para os casos:
+            //  dx == 0, dy != 0
+            //  dx != 0, dy == 0
+
+            Toast.makeText(getApplicationContext(), toSpeak, Toast.LENGTH_SHORT).show();
+            t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
         }
+
+        return false;
+
     }
-
-    double getH(float x) {
-
-        return ((x * 10.0) / screenY);
-    }
-
-    double getW(float y) {
-        return ((y * 6.0) / screenX);
-    }
-
-
-    private int Angle(double x2, double y2) {
-        return (int) (Math.atan2(y2, x2) * Rad2Deg);
-    }
-
-    public void FullScreencall() {
-        if (Build.VERSION.SDK_INT > 11 && Build.VERSION.SDK_INT < 19) { // lower api
-            View v = this.getWindow().getDecorView();
-            v.setSystemUiVisibility(View.GONE);
-        } else if (Build.VERSION.SDK_INT >= 19) {
-            //for new api versions.
-            View decorView = getWindow().getDecorView();
-            int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
-            decorView.setSystemUiVisibility(uiOptions);
-        }
-    }
-
 
 }
-

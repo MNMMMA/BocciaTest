@@ -19,17 +19,11 @@ import android.view.WindowManager;
 import java.util.Locale;
 import java.util.Random;
 
-public class TestBepActivity extends AppCompatActivity {
+public class TestBepActivity extends BaseActivity {
 
 
     private MediaPlayer mp = new MediaPlayer();
-    boolean flag = false;
     private Handler handler = new Handler();
-    private double distance;
-    private int angle;
-    double Rad2Deg = 180.0 / Math.PI;
-    private int radius = 50, width, height;
-    private long rate;
 
 
     @Override
@@ -37,13 +31,6 @@ public class TestBepActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         FullScreencall();
         setContentView(R.layout.activity_test_bep);
-
-
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        WindowManager wm = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE); // the results will be higher than using the activity context object or the getWindowManager() shortcut
-        wm.getDefaultDisplay().getMetrics(displayMetrics);
-        width = displayMetrics.widthPixels;
-        height = displayMetrics.heightPixels;
 
     }
 
@@ -64,10 +51,6 @@ public class TestBepActivity extends AppCompatActivity {
     public void onDestroy() {
         super.onDestroy();
         mp.stop();
-    }
-
-    private double bep_rate(double x) {
-        return 0.5 * x + 1;
     }
 
     private Runnable runnable = new Runnable() {
@@ -107,31 +90,6 @@ public class TestBepActivity extends AppCompatActivity {
 
         runnable.run();
         return false;
-    }
-
-    double getH(float y) {
-        return ((y * 10.0) / height);
-    }
-
-    double getW(float x) {
-        return ((x * 6.0) / width);
-    }
-
-
-    private int Angle(double x2, double y2) {
-        return (int) (Math.atan2(y2, x2) * Rad2Deg);
-    }
-
-    public void FullScreencall() {
-        if (Build.VERSION.SDK_INT > 11 && Build.VERSION.SDK_INT < 19) { // lower api
-            View v = this.getWindow().getDecorView();
-            v.setSystemUiVisibility(View.GONE);
-        } else if (Build.VERSION.SDK_INT >= 19) {
-            //for new api versions.
-            View decorView = getWindow().getDecorView();
-            int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
-            decorView.setSystemUiVisibility(uiOptions);
-        }
     }
 
 }

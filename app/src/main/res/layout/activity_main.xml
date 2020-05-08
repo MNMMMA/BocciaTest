@@ -9,39 +9,34 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
-        <LinearLayout
+        <Button
+            android:id="@+id/button"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="180dp"
+            android:text="Jogo\n Text-To-Speech" />
 
-            <Button
-                android:id="@+id/button"
-                android:layout_width="match_parent"
-                android:layout_height="180dp"
-                android:text="Text-To-Speech Localization" />
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="match_parent"
+            android:layout_height="185dp"
+            android:text="Jogo\n Beep" />
 
-            <Button
-                android:id="@+id/button2"
-                android:layout_width="match_parent"
-                android:layout_height="185dp"
-                android:text="Bep Localization" />
+        <Button
+            android:id="@+id/button3"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:background="#F44336"
+            android:text="Treino \n Text-To-Speech " />
 
-            <Button
-                android:id="@+id/button3"
-                android:layout_width="match_parent"
-                android:layout_height="180dp"
-                android:text="Text-To-Speech Test" />
-
-            <Button
-                android:id="@+id/button4"
-                android:layout_width="match_parent"
-                android:layout_height="180dp"
-                android:text="Bep Test" />
-
-
-        </LinearLayout>
+        <Button
+            android:id="@+id/button4"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:background="#F44336"
+            android:paddingTop="10dp"
+            android:text="Treino \n Beep" />
 
     </LinearLayout>
 
