@@ -14,6 +14,7 @@ import java.util.Locale;
 public class BaseActivity extends AppCompatActivity {
 
     public int bx, by, radius = 50;
+    protected MyViewDrawBall view;
     protected double distance;
     protected int angle;
     double Rad2Deg = 180.0 / Math.PI;

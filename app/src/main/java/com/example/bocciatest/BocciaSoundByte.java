@@ -26,14 +26,24 @@ public class BocciaSoundByte extends BaseActivity {
     private MediaPlayer mp = new MediaPlayer();
     private Handler handler = new Handler();
 
+    private int sizeX,sizeY;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        MyViewDrawBall view = new MyViewDrawBall(this, bx, by, flag);
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        sizeX = size.x;
+        sizeY = size.y;
+
+
+        view = new MyViewDrawBall(this, bx, by, flag,sizeX,sizeY);
 
         setContentView(view);
         mp = MediaPlayer.create(BocciaSoundByte.this, R.raw.bep);
+
 
         runnable.run();
 
@@ -82,6 +92,9 @@ public class BocciaSoundByte extends BaseActivity {
         int x = (int) event.getX();
         int y = (int) event.getY();
 
+        bx = view.bx;
+        by = view.by;
+
         if (event.getAction() != MotionEvent.ACTION_DOWN) {
             return false;
         }
@@ -96,6 +109,11 @@ public class BocciaSoundByte extends BaseActivity {
 
         } else {
             double dy = Math.sqrt(Math.pow((y - by), 2));
+
+            String speak = "y do dedo" + y + " y da bola " + by;
+
+            Toast.makeText(getApplicationContext(), speak, Toast.LENGTH_SHORT).show();
+
             sound(getH((float) dy));
         }
 

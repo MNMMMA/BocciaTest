@@ -23,15 +23,19 @@ import java.util.Random;
 
 public class BocciaScreen extends BaseActivity {
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        MyViewDrawBall myView = new MyViewDrawBall(this, bx, by, flag);
+        MyViewDrawBall view = new MyViewDrawBall(this, bx, by, flag);
 
         // setContentView(R.layout.activity_boccia_screen);
-        setContentView(myView);
+        setContentView(view);
 
+        bx = view.bx;
+        by = view.by;
     }
 
     @Override
