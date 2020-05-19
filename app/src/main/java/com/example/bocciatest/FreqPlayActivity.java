@@ -4,53 +4,85 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Point;
+import android.media.AudioFormat;
+import android.media.AudioManager;
+import android.media.AudioTrack;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.speech.tts.TextToSpeech;
-import android.view.Display;
 import android.view.MotionEvent;
-import android.view.View;
 import android.widget.Toast;
 
 import com.example.bocciatest.campo.PontoCampo;
 
-import java.util.Locale;
-import java.util.Random;
+public class FreqPlayActivity extends BaseActivity {
 
 
-public class BocciaSoundByte extends BaseActivity {
-
-
-    private MediaPlayer mp = new MediaPlayer();
     private Handler handler = new Handler();
+
+
+    private final int duration = 1; // seconds
+    private final int sampleRate = 5000;
+    private final int numSamples = duration * sampleRate;
+    private final double sample[] = new double[numSamples];
+    private double freqOfTone; // hz
+    public AudioTrack audioTrack;
+    private final byte generatedSnd[] = new byte[2 * numSamples];
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(new MyCanvasView(this));
-        mp = MediaPlayer.create(BocciaSoundByte.this, R.raw.bep);
+    }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
 
         runnable.run();
-
-
     }
+
+
+    public void genTone() {
+        // fill out the array
+        for (int i = 0; i < numSamples; ++i) {
+            sample[i] = Math.sin(2 * Math.PI * i / (sampleRate / freqOfTone));
+        }
+
+        // convert to 16 bit pcm sound array
+        // assumes the sample buffer is normalised.
+        int idx = 0;
+        for (double dVal : sample) {
+            // scale to maximum amplitude
+            short val = (short) ((dVal * 32767));
+            // in 16 bit wav PCM, first byte is the low order byte
+            generatedSnd[idx++] = (byte) (val & 0x00ff);
+
+            generatedSnd[idx++] = (byte) ((val & 0xff00) >>> 8);
+        }
+    }
+
+    public void playSound() {
+         audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC,
+                sampleRate, AudioFormat.CHANNEL_CONFIGURATION_MONO,
+                AudioFormat.ENCODING_PCM_16BIT, numSamples, AudioTrack.MODE_STREAM);
+        audioTrack.write(generatedSnd, 0, generatedSnd.length);
+        audioTrack.play();
+    }
+
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mp.stop();
+        handler.removeCallbacks(runnable);
     }
 
     @Override
     public void onBackPressed() {
-        stopRepeatingTask();
-        mp.stop();
+        handler.removeCallbacks(runnable);
         super.onBackPressed();
     }
 
@@ -61,23 +93,19 @@ public class BocciaSoundByte extends BaseActivity {
     public Runnable runnable = new Runnable() {
         @Override
         public void run() {
+            genTone();
             if (flag) {
-                mp.setVolume((float) 0.1, (float) 0.9);
-                mp.start();
+                playSound();
             }
             handler.postDelayed(runnable, rate * 300);
         }
     };
 
-    public void stopRepeatingTask() {
-        handler.removeCallbacks(runnable);
-    }
-
 
     private class MyCanvasView extends MyViewDrawBall {
 
         public MyCanvasView(Context context) {
-            super(context, BocciaSoundByte.this.campo);
+            super(context, FreqPlayActivity.this.campo);
 
 
         }
@@ -113,8 +141,8 @@ public class BocciaSoundByte extends BaseActivity {
                 return false;
 
             } else {
-               Double nRate = Math.sqrt(Math.pow(dy, 2));
-
+                Double nRate = Math.sqrt(Math.pow(dy, 2));
+                freqOfTone = nRate * 100.0;
                 sound(nRate);
             }
 
@@ -123,9 +151,4 @@ public class BocciaSoundByte extends BaseActivity {
 
     }
 
-
 }
-
-
-
-

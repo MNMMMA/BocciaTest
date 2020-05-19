@@ -8,28 +8,23 @@ import android.speech.tts.TextToSpeech;
 import android.view.MotionEvent;
 import android.widget.Toast;
 
+import com.example.bocciatest.campo.Campo;
+import com.example.bocciatest.campo.PontoCampo;
+import com.example.bocciatest.campo.PontoEcra;
+
 import java.util.Random;
 
 public class MyViewDrawBall extends MyView {
 
-    public int sizeX,sizeY,bx, by,radius=50;
+    public PontoCampo posicaoCampo;
+    public int  radius=50;
+    public Campo campo;
     Random rand = new Random();
     boolean flag;
 
-    public MyViewDrawBall(Context context, int bx, int by, boolean flag) {
+    public MyViewDrawBall(Context context,Campo campo) {
         super(context);
-        this.bx = bx;
-        this.by = by;
-        this.flag = flag;
-    }
-
-    public MyViewDrawBall(Context context, int bx, int by, boolean flag,int sizeX,int sizeY) {
-        super(context);
-        this.bx = bx;
-        this.by = by;
-        this.flag = flag;
-        this.sizeX = sizeX;
-        this.sizeY = sizeY;
+        this.campo = campo;
     }
 
 
@@ -39,21 +34,13 @@ public class MyViewDrawBall extends MyView {
         int x = getWidth();
         int y = getHeight();
 
+
+        posicaoCampo = campo.getRandomPoint(); // talvez mais tarde por uma list na Classe campo
+
         paint.setColor(Color.RED);
-
-
-        bx = rand.nextInt(x);  // versao alternativa construir bola com o tamanho do ecra este erro vai mudar com a posicao seria da bola
-        by = rand.nextInt(y);
-
-        canvas.drawCircle(bx, by, radius, paint);
+        PontoEcra posicaoEcra = campo.converter(posicaoCampo);
+        canvas.drawCircle(posicaoEcra.x, posicaoEcra.y, radius, paint);
 
     }
 
-    public int getBx() {
-        return bx;
-    }
-
-    public int getBy() {
-        return by;
-    }
 }

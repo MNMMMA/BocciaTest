@@ -18,89 +18,99 @@ import android.view.View;
 import android.widget.Toast;
 
 
+import com.example.bocciatest.campo.PontoCampo;
+
 import java.util.Locale;
 import java.util.Random;
 
 public class BocciaScreen extends BaseActivity {
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        MyViewDrawBall view = new MyViewDrawBall(this, bx, by, flag);
-
         // setContentView(R.layout.activity_boccia_screen);
-        setContentView(view);
 
-        bx = view.bx;
-        by = view.by;
+        setContentView(new MyCanvasView(this));
+
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
 
-        int x = (int) event.getX();
-        int y = (int) event.getY();
+    private class MyCanvasView extends MyViewDrawBall {
 
-        if (event.getAction() != MotionEvent.ACTION_DOWN)
-            return false;
+        public MyCanvasView(Context context) {
 
-        if (Math.abs(x - bx) < radius && Math.abs(y - by) < radius) {
+            super(context, BocciaScreen.this.campo);
+        }
 
-            flag = true;
-
-            distance = Math.sqrt(Math.pow(bx, 2) + Math.pow(by, 2));
-
-            //mp.setVolume((float) (Math.cos(angle) +1)/2,(1-(float) Math.cos(angle))/2);
-
-            angle = Angle(bx, by);
+       /* @Override
+        protected void onDraw(Canvas canvas) {
+            super.onDraw(canvas);
+        }*/
 
 
-            Toast.makeText(getApplicationContext(), A_BOLA_ESTÁ_AÍ_MESMO, Toast.LENGTH_SHORT).show();
-            t1.speak(A_BOLA_ESTÁ_AÍ_MESMO, TextToSpeech.QUEUE_FLUSH, null);
+        @Override
+        public boolean onTouchEvent(MotionEvent event) {
+            if (event.getAction() != MotionEvent.ACTION_DOWN)
+                return false;
 
-            return false;
-        } else {
+            int x = (int) event.getX();
+            int y = (int) event.getY();
 
-            double dx = getH(bx - x);
-            double dy = getW(by - y);
+            PontoCampo eventFieldPoint = campo.converter(x, y);
+            double dx = posicaoCampo.x - eventFieldPoint.x;
+            double dy = posicaoCampo.y - eventFieldPoint.y;
+
+            double tolerancia = 0.1;
+            String toSpeak;
+
+            if (Math.abs(dx) < tolerancia && Math.abs(dy) < tolerancia) {
+
+                toSpeak = A_BOLA_ESTÁ_AÍ_MESMO;
+
+                return false;
+            } else {
+
+                String dirH;
+                String dirV;
+
+                // TODO: substituir todas as strings hard-coded por referências a resources
+                if (dx > 0) {
+                    dirH = DIREITA;
+                } else if (dx < 0) {
+                    dirH = ESQUERDA;
+                    dx = -dx;
+                } else {
+                    dirH = "nessa coluna";
+                }
+                if (dy > 0) {
+                    dirV = BAIXO;
+
+                } else if (dy < 0) {
+                    dirV = CIMA;
+                    dy = -dy;
+                } else {
+                    dirV = "nessa linha";
+                }
+
+                toSpeak = String.format(
+                        A_BOLA_ESTÁ_HÁ_2_F_METROS_CENTIMETROS_HÁ_S_E_2_F_METROS_CENTIMETROS_PARA_S,
+                        dx, dirH,
+                        dy, dirV
+                );
 
 
-            String dirH = "";
-            String dirV = "";
-
-            // TODO: substituir todas as strings hard-coded por referências a resources
-            if (dx > 0) {
-                dirH = DIREITA;
-            } else if (dx < 0) {
-                dirH = ESQUERDA;
-                dx = -dx;
             }
-            if (dy > 0) {
-                dirV = BAIXO;
 
-            } else if (dy < 0) {
-                dirV = CIMA;
-                dy = -dy;
-            }
-
-            String toSpeak = String.format(
-                    A_BOLA_ESTÁ_HÁ_2_F_METROS_CENTIMETROS_HÁ_S_E_2_F_METROS_CENTIMETROS_PARA_S,
-                    dx, dirH,
-                    dy, dirV
-            );
-
-            // TODO: criar mensagens diferenciadas para os casos:
-            //  dx == 0, dy != 0
-            //  dx != 0, dy == 0
 
             Toast.makeText(getApplicationContext(), toSpeak, Toast.LENGTH_SHORT).show();
             t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
+
+            return false;
+
         }
 
-        return false;
 
     }
 

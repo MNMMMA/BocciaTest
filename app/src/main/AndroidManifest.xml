@@ -11,7 +11,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".TestBepActivity"></activity>
+        <activity android:name=".TreinoFreqActivity"></activity>
+        <activity android:name=".FreqPlayActivity" />
+        <activity android:name=".TestBepActivity" />
         <activity android:name=".TestTTSActivity" />
         <activity android:name=".BocciaScreen" />
         <activity android:name=".BocciaSoundByte" />

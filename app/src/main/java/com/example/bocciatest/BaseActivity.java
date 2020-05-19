@@ -9,16 +9,18 @@ import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.bocciatest.campo.Campo;
+
 import java.util.Locale;
 
 public class BaseActivity extends AppCompatActivity {
 
-    public int bx, by, radius = 50;
+    public Campo campo;
+    public int radius = 50;
     protected MyViewDrawBall view;
     protected double distance;
     protected int angle;
     double Rad2Deg = 180.0 / Math.PI;
-    float screenX, screenY;
     boolean flag = false;
     protected TextToSpeech t1;
     public long rate;
@@ -40,8 +42,8 @@ public class BaseActivity extends AppCompatActivity {
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
-        screenX = size.x;
-        screenY = size.y;
+        campo = new Campo(size.x, size.y);
+
         final Locale myLocale = new Locale("pt", "PT");
 
         t1 = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
@@ -56,6 +58,7 @@ public class BaseActivity extends AppCompatActivity {
 
     }
 
+    /*
     public double getH(float y) {
 
         return ((y * 10.0) / screenY);
@@ -64,7 +67,7 @@ public class BaseActivity extends AppCompatActivity {
     double getW(float x) {
         return ((x * 6.0) / screenX);
     }
-
+*/
     protected static double bep_rate(double x) {
         return 0.5 * x + 1;
     }
