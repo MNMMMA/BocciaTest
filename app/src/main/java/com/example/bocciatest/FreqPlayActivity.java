@@ -22,10 +22,10 @@ public class FreqPlayActivity extends BaseActivity {
     private Handler handler = new Handler();
 
 
-    private final int duration = 1; // seconds
-    private final int sampleRate = 5000;
-    private final int numSamples = duration * sampleRate;
-    private final double sample[] = new double[numSamples];
+    private int duration = 1; // seconds
+    private int sampleRate = 5000;
+    private int numSamples = duration * sampleRate;
+    private double sample[] = new double[numSamples];
     private double freqOfTone; // hz
     public AudioTrack audioTrack;
     private final byte generatedSnd[] = new byte[2 * numSamples];
@@ -35,6 +35,9 @@ public class FreqPlayActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(new MyCanvasView(this));
+        audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC,
+                sampleRate, AudioFormat.CHANNEL_CONFIGURATION_MONO,
+                AudioFormat.ENCODING_PCM_16BIT, numSamples, AudioTrack.MODE_STREAM);
     }
 
 
@@ -66,10 +69,11 @@ public class FreqPlayActivity extends BaseActivity {
     }
 
     public void playSound() {
-         audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC,
+
+        audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC,
                 sampleRate, AudioFormat.CHANNEL_CONFIGURATION_MONO,
                 AudioFormat.ENCODING_PCM_16BIT, numSamples, AudioTrack.MODE_STREAM);
-        audioTrack.write(generatedSnd, 0, generatedSnd.length);
+
         audioTrack.play();
     }
 
@@ -93,8 +97,9 @@ public class FreqPlayActivity extends BaseActivity {
     public Runnable runnable = new Runnable() {
         @Override
         public void run() {
-            genTone();
+
             if (flag) {
+                genTone();
                 playSound();
             }
             handler.postDelayed(runnable, rate * 300);
@@ -141,9 +146,11 @@ public class FreqPlayActivity extends BaseActivity {
                 return false;
 
             } else {
+
                 Double nRate = Math.sqrt(Math.pow(dy, 2));
-                freqOfTone = nRate * 100.0;
+                freqOfTone =  1000.0/nRate; // depois inverter
                 sound(nRate);
+
             }
 
             return false;

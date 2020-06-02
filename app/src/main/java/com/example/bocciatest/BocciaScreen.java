@@ -62,43 +62,41 @@ public class BocciaScreen extends BaseActivity {
             double dx = posicaoCampo.x - eventFieldPoint.x;
             double dy = posicaoCampo.y - eventFieldPoint.y;
 
-            double tolerancia = 0.1;
+            double tolerancia = 0.2;
             String toSpeak;
 
-            if (Math.abs(dx) < tolerancia && Math.abs(dy) < tolerancia) {
+
+            distance = Math.sqrt(Math.pow((dx-posicaoCampo.x),2)+Math.pow((dy-posicaoCampo.y),2));
+
+            //Math.abs(x - bx) < radius && Math.abs(y - by) < radius
+            if (Math.abs(dx) < 0.4 && Math.abs(dy) < 0.4) {
 
                 toSpeak = A_BOLA_ESTÁ_AÍ_MESMO;
 
-                return false;
             } else {
 
                 String dirH;
                 String dirV;
 
                 // TODO: substituir todas as strings hard-coded por referências a resources
-                if (dx > 0) {
-                    dirH = DIREITA;
-                } else if (dx < 0) {
-                    dirH = ESQUERDA;
+                if (dx > tolerancia) {
+                    dirH = String.format(Locale.getDefault(), "%.2f metros centimetros à direita", dx);
+                } else if (dx < -tolerancia) {
+                    dirH = String.format(Locale.getDefault(), "%.2f metros centimetros à esquerda", -dx);
                     dx = -dx;
                 } else {
                     dirH = "nessa coluna";
                 }
-                if (dy > 0) {
-                    dirV = BAIXO;
+                if (dy > tolerancia) {
+                    dirV = String.format(Locale.getDefault(), "%.2f metros centimetros acima", dy);
+                } else if (dy < -tolerancia) {
+                    dirV = String.format(Locale.getDefault(), "%.2f metros centimetros abaixo", -dy);
 
-                } else if (dy < 0) {
-                    dirV = CIMA;
-                    dy = -dy;
                 } else {
                     dirV = "nessa linha";
                 }
 
-                toSpeak = String.format(
-                        A_BOLA_ESTÁ_HÁ_2_F_METROS_CENTIMETROS_HÁ_S_E_2_F_METROS_CENTIMETROS_PARA_S,
-                        dx, dirH,
-                        dy, dirV
-                );
+                toSpeak = String.format(Locale.getDefault(), "A bola está %s e %s", dirH,dirV);
 
 
             }

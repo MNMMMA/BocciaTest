@@ -21,16 +21,11 @@ public class BaseActivity extends AppCompatActivity {
     protected double distance;
     protected int angle;
     double Rad2Deg = 180.0 / Math.PI;
-    boolean flag = false;
+    boolean flag = true;
     protected TextToSpeech t1;
     public long rate;
     public static final String A_BOLA_ESTÁ_AÍ_MESMO = "A bola está aí mesmo";
     public static final String O_DEDO_ESTÁ_À_2_F_METROS_CENTIMETROS_NA_HORIZONTAL_E_2_F_METROS_CENTIMETROS_NA_VERTICAL = "O dedo está à %.2f metros centimetros na horizontal e %.2f metros centimetros na vertical";
-    public static final String DIREITA = "direita";
-    public static final String ESQUERDA = "esquerda";
-    public static final String BAIXO = "baixo";
-    public static final String CIMA = "cima";
-    public static final String A_BOLA_ESTÁ_HÁ_2_F_METROS_CENTIMETROS_HÁ_S_E_2_F_METROS_CENTIMETROS_PARA_S = "A bola está há %.2f metros centimetros  há %s e %.2f metros centimetros para %s";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,19 +50,8 @@ public class BaseActivity extends AppCompatActivity {
             }
         });
 
-
     }
 
-    /*
-    public double getH(float y) {
-
-        return ((y * 10.0) / screenY);
-    }
-
-    double getW(float x) {
-        return ((x * 6.0) / screenX);
-    }
-*/
     protected static double bep_rate(double x) {
         return 0.5 * x + 1;
     }
@@ -96,7 +80,6 @@ public class BaseActivity extends AppCompatActivity {
         flag = true;
         //angle = Angle(bx, by);
         //mp.setVolume((float) (Math.cos(angle) +1)/2,(1-(float) Math.cos(angle))/2);
-
         rate = (long) bep_rate(y);
 
     }

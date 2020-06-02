@@ -25,6 +25,7 @@ import java.util.Random;
 public class BocciaSoundByte extends BaseActivity {
 
 
+    boolean oFlag = false;
     private MediaPlayer mp = new MediaPlayer();
     private Handler handler = new Handler();
 
@@ -35,10 +36,7 @@ public class BocciaSoundByte extends BaseActivity {
         setContentView(new MyCanvasView(this));
         mp = MediaPlayer.create(BocciaSoundByte.this, R.raw.bep);
 
-
         runnable.run();
-
-
     }
 
     @Override
@@ -61,11 +59,18 @@ public class BocciaSoundByte extends BaseActivity {
     public Runnable runnable = new Runnable() {
         @Override
         public void run() {
-            if (flag) {
-                mp.setVolume((float) 0.1, (float) 0.9);
-                mp.start();
+            try {
+                if (flag) {
+                //    mp.setVolume((float) 0.1, (float) 0.9);
+                    mp.start();
+                }else{
+                    mp.stop();
+                }
+            } finally {
+                handler.postDelayed(runnable, rate * 400);
             }
-            handler.postDelayed(runnable, rate * 300);
+
+
         }
     };
 
@@ -78,7 +83,6 @@ public class BocciaSoundByte extends BaseActivity {
 
         public MyCanvasView(Context context) {
             super(context, BocciaSoundByte.this.campo);
-
 
         }
 
@@ -109,11 +113,14 @@ public class BocciaSoundByte extends BaseActivity {
 
                 Toast.makeText(getApplicationContext(), A_BOLA_ESTÁ_AÍ_MESMO, Toast.LENGTH_SHORT).show();
                 t1.speak(A_BOLA_ESTÁ_AÍ_MESMO, TextToSpeech.QUEUE_FLUSH, null);
-
-                return false;
-
+                handler.removeCallbacks(runnable);
+                oFlag = true;
             } else {
-               Double nRate = Math.sqrt(Math.pow(dy, 2));
+                if (oFlag){
+                    runnable.run();
+                    oFlag = false;
+                }
+                Double nRate = Math.sqrt(Math.pow(dy, 2));
 
                 sound(nRate);
             }

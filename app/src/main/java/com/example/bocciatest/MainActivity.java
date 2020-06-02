@@ -10,7 +10,7 @@ import android.view.Window;
 import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
-    private Button btnTTS, btnBep, btnTest3, btnTest4,btnFreq,btnTreinoFreq;
+    private Button btnTTS, btnBep, btnTest3, btnTest4;
 
 
     @Override
@@ -26,16 +26,7 @@ public class MainActivity extends AppCompatActivity {
         btnBep = findViewById(R.id.button2);
         btnTest3 = findViewById(R.id.button3);
         btnTest4 = findViewById(R.id.button4);
-        btnFreq = findViewById(R.id.button5);
-        btnTreinoFreq = findViewById(R.id.button6);
 
-        btnTreinoFreq.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                startActivity(new Intent(MainActivity.this, TreinoFreqActivity.class));
-            }
-        });
 
         btnTTS.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,14 +58,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 startActivity(new Intent(MainActivity.this, TestBepActivity.class));
-            }
-        });
-
-        btnFreq.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                startActivity(new Intent(MainActivity.this, FreqPlayActivity.class));
             }
         });
 

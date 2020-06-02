@@ -18,6 +18,7 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.example.bocciatest.campo.PontoCampo;
+import com.example.bocciatest.campo.PontoEcra;
 
 import java.util.Locale;
 import java.util.Random;
@@ -34,6 +35,9 @@ public class TestBepActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         FullScreencall();
         setContentView(new MyCanvasView(this));
+        mp = MediaPlayer.create(TestBepActivity.this, R.raw.bep);
+
+        runnable.run();
     }
 
 
@@ -58,13 +62,11 @@ public class TestBepActivity extends BaseActivity {
     private Runnable runnable = new Runnable() {
         @Override
         public void run() {
-            if (!flag) {
-                return;
+            if (flag) {
+                //mp.setVolume((float) 0.1, (float) 0.9);
+                mp.start();
             }
-
-            mp.setVolume((float) 0.1, (float) 0.9);
-            mp.start();
-            handler.postDelayed(runnable, rate * 300);
+            handler.postDelayed(runnable, rate * 400);
         }
     };
 
@@ -73,12 +75,8 @@ public class TestBepActivity extends BaseActivity {
         public MyCanvasView(Context context) {
 
             super(context);
-        }
 
-       /* @Override
-        protected void onDraw(Canvas canvas) {
-            super.onDraw(canvas);
-        }*/
+        }
 
         @Override
         public boolean onTouchEvent(MotionEvent event) {
@@ -90,19 +88,23 @@ public class TestBepActivity extends BaseActivity {
             if (event.getAction() != MotionEvent.ACTION_DOWN)
                 return false;
 
-            mp = MediaPlayer.create(TestBepActivity.this, R.raw.bep);
+
+            flag = false;
+            int realX = (int) (campo.maxEcraY - y);
+            int realY = (int) (campo.maxEcraX - x);
+
+            PontoCampo ponto = campo.converter(new PontoEcra(realX, realY));
 
             // TODO: implementar com X e Y
             // distance = Math.sqrt(Math.pow(getH(x), 2));
             //distance = getH(y); // TODO: remover esta implementação provisória
 
-            flag = true;
-            angle = Angle(x, y);
+            angle = Angle(realX, realY);
             //mp.setVolume((float) (Math.cos(angle) +1)/2,(1-(float) Math.cos(angle))/2);
+            distance = Math.sqrt(Math.pow(ponto.x, 2));
 
-            rate = (long) bep_rate(distance);
+            sound(distance);
 
-            runnable.run();
             return false;
         }
     }
