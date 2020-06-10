@@ -1,13 +1,10 @@
 package com.example.bocciatest;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Context;
 import android.graphics.Canvas;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.speech.tts.TextToSpeech;
@@ -18,39 +15,33 @@ import com.example.bocciatest.campo.PontoCampo;
 
 public class FreqPlayActivity extends BaseActivity {
 
-
     private Handler handler = new Handler();
-
-
-    private int duration = 1; // seconds
-    private int sampleRate = 5000;
+    private int duration = 3; // seconds
+    private int sampleRate = 8000;
     private int numSamples = duration * sampleRate;
-    private double sample[] = new double[numSamples];
-    private double freqOfTone; // hz
-    public AudioTrack audioTrack;
-    private final byte generatedSnd[] = new byte[2 * numSamples];
+    private double[] sample = new double[numSamples];
+    private double freqOfTone = 440; // hz
+    boolean oFlag = false;
 
+    private final byte generatedSnd[] = new byte[2 * numSamples];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(new MyCanvasView(this));
-        audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC,
-                sampleRate, AudioFormat.CHANNEL_CONFIGURATION_MONO,
-                AudioFormat.ENCODING_PCM_16BIT, numSamples, AudioTrack.MODE_STREAM);
     }
 
 
     @Override
     protected void onResume() {
         super.onResume();
-
+        genTone();
         runnable.run();
     }
 
 
     public void genTone() {
-        // fill out the array
+       // fill out the array
         for (int i = 0; i < numSamples; ++i) {
             sample[i] = Math.sin(2 * Math.PI * i / (sampleRate / freqOfTone));
         }
@@ -66,15 +57,6 @@ public class FreqPlayActivity extends BaseActivity {
 
             generatedSnd[idx++] = (byte) ((val & 0xff00) >>> 8);
         }
-    }
-
-    public void playSound() {
-
-        audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC,
-                sampleRate, AudioFormat.CHANNEL_CONFIGURATION_MONO,
-                AudioFormat.ENCODING_PCM_16BIT, numSamples, AudioTrack.MODE_STREAM);
-
-        audioTrack.play();
     }
 
 
@@ -97,11 +79,17 @@ public class FreqPlayActivity extends BaseActivity {
     public Runnable runnable = new Runnable() {
         @Override
         public void run() {
-
+             AudioTrack audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC,
+                     sampleRate, AudioFormat.CHANNEL_CONFIGURATION_MONO,
+                     AudioFormat.ENCODING_PCM_16BIT, numSamples,
+                     AudioTrack.MODE_STATIC);
             if (flag) {
-                genTone();
-                playSound();
+                audioTrack.write(generatedSnd, 0, generatedSnd.length);
+                audioTrack.play();
+            }else{
+                audioTrack.stop();
             }
+
             handler.postDelayed(runnable, rate * 300);
         }
     };
@@ -111,14 +99,11 @@ public class FreqPlayActivity extends BaseActivity {
 
         public MyCanvasView(Context context) {
             super(context, FreqPlayActivity.this.campo);
-
-
         }
 
         @Override
         protected void onDraw(Canvas canvas) {
             super.onDraw(canvas);
-
             sound(posicaoCampo.y);
         }
 
@@ -142,14 +127,20 @@ public class FreqPlayActivity extends BaseActivity {
 
                 Toast.makeText(getApplicationContext(), A_BOLA_ESTÁ_AÍ_MESMO, Toast.LENGTH_SHORT).show();
                 t1.speak(A_BOLA_ESTÁ_AÍ_MESMO, TextToSpeech.QUEUE_FLUSH, null);
-
-                return false;
-
+                oFlag = true;
             } else {
+                if (oFlag){
+                    runnable.run();
+                    oFlag = false;
+                }
 
                 Double nRate = Math.sqrt(Math.pow(dy, 2));
-                freqOfTone =  1000.0/nRate; // depois inverter
+                freqOfTone = Math.log(100.0/nRate) ; // depois inverter
                 sound(nRate);
+
+                genTone();
+
+                flag = true;
 
             }
 

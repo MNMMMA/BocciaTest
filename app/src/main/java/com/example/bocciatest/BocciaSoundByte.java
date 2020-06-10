@@ -123,6 +123,7 @@ public class BocciaSoundByte extends BaseActivity {
                 Double nRate = Math.sqrt(Math.pow(dy, 2));
 
                 sound(nRate);
+
             }
 
             return false;

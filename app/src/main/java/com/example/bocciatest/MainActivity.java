@@ -10,7 +10,7 @@ import android.view.Window;
 import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
-    private Button btnTTS, btnBep, btnTest3, btnTest4;
+    private Button btnTTS, btnBep, btnTreinoTTS, btnTreinoBep, btnFreq, btnTreinoFreq;
 
 
     @Override
@@ -24,9 +24,12 @@ public class MainActivity extends AppCompatActivity {
 
         btnTTS = findViewById(R.id.button);
         btnBep = findViewById(R.id.button2);
-        btnTest3 = findViewById(R.id.button3);
-        btnTest4 = findViewById(R.id.button4);
 
+        btnTreinoTTS = findViewById(R.id.button3);
+        btnTreinoBep = findViewById(R.id.button4);
+
+        btnFreq = findViewById(R.id.button5);
+        btnTreinoFreq = findViewById(R.id.button6);
 
         btnTTS.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -44,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        btnTest3.setOnClickListener(new View.OnClickListener() {
+        btnTreinoTTS.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -53,11 +56,25 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        btnTest4.setOnClickListener(new View.OnClickListener() {
+        btnTreinoBep.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 startActivity(new Intent(MainActivity.this, TestBepActivity.class));
+            }
+        });
+
+        btnFreq.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this,FreqPlayActivity.class));
+            }
+        });
+
+        btnTreinoFreq.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this,TreinoFreqActivity.class));
             }
         });
 
