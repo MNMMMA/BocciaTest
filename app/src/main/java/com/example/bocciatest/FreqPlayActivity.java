@@ -22,6 +22,7 @@ public class FreqPlayActivity extends BaseActivity {
     private double[] sample = new double[numSamples];
     private double freqOfTone = 440; // hz
     boolean oFlag = false;
+    private AudioTrack audioTrack;
 
     private final byte generatedSnd[] = new byte[2 * numSamples];
 
@@ -59,6 +60,10 @@ public class FreqPlayActivity extends BaseActivity {
         }
     }
 
+    void playSound(){
+
+
+    }
 
     @Override
     public void onDestroy() {
@@ -73,21 +78,23 @@ public class FreqPlayActivity extends BaseActivity {
     }
 
 
-    // TODO: consultar https://stackoverflow.com/questions/6242268/repeat-a-task-with-a-time-delay
-    //  e implementar de forma mais correta o som repetido.
-
     public Runnable runnable = new Runnable() {
         @Override
         public void run() {
-             AudioTrack audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC,
+            if (audioTrack != null){
+                audioTrack.release();
+            }
+             audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC,
                      sampleRate, AudioFormat.CHANNEL_CONFIGURATION_MONO,
                      AudioFormat.ENCODING_PCM_16BIT, numSamples,
                      AudioTrack.MODE_STATIC);
+
             if (flag) {
                 audioTrack.write(generatedSnd, 0, generatedSnd.length);
                 audioTrack.play();
             }else{
                 audioTrack.stop();
+                audioTrack.release();
             }
 
             handler.postDelayed(runnable, rate * 300);
@@ -135,7 +142,7 @@ public class FreqPlayActivity extends BaseActivity {
                 }
 
                 Double nRate = Math.sqrt(Math.pow(dy, 2));
-                freqOfTone = Math.log(100.0/nRate) ; // depois inverter
+                //freqOfTone = Math.log(100.0/nRate) ; // depois inverter
                 sound(nRate);
 
                 genTone();
