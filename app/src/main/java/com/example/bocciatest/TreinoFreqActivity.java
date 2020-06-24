@@ -17,15 +17,14 @@ import com.example.bocciatest.campo.PontoCampo;
 
 public class TreinoFreqActivity extends BaseActivity {
 
-
     private Handler handler = new Handler();
-
-
-    private final int duration = 1; // seconds
-    private final int sampleRate = 5000;
-    private final int numSamples = duration * sampleRate;
-    private final double sample[] = new double[numSamples];
-    private double freqOfTone; // hz
+    private int duration = 3; // seconds
+    private int sampleRate = 8000;
+    private int numSamples = duration * sampleRate;
+    private double[] sample = new double[numSamples];
+    private double freqOfTone = 440; // hz
+    boolean oFlag = false;
+    private AudioTrack audioTrack;
 
     private final byte generatedSnd[] = new byte[2 * numSamples];
 
@@ -42,10 +41,7 @@ public class TreinoFreqActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
-        // Use a new tread as this can take a while
-        final Thread thread = new Thread(runnable);
-        thread.start();
+        genTone();
     }
 
 
@@ -58,23 +54,14 @@ public class TreinoFreqActivity extends BaseActivity {
         // convert to 16 bit pcm sound array
         // assumes the sample buffer is normalised.
         int idx = 0;
-        for ( double dVal : sample) {
+        for (double dVal : sample) {
             // scale to maximum amplitude
             short val = (short) ((dVal * 32767));
             // in 16 bit wav PCM, first byte is the low order byte
             generatedSnd[idx++] = (byte) (val & 0x00ff);
+
             generatedSnd[idx++] = (byte) ((val & 0xff00) >>> 8);
-
         }
-    }
-
-    public void playSound() {
-        AudioTrack audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC,
-                sampleRate, AudioFormat.CHANNEL_CONFIGURATION_MONO,
-                AudioFormat.ENCODING_PCM_16BIT, numSamples,
-                AudioTrack.MODE_STREAM);
-        audioTrack.write(generatedSnd, 0, generatedSnd.length);
-        audioTrack.play();
     }
 
 
@@ -91,27 +78,36 @@ public class TreinoFreqActivity extends BaseActivity {
     }
 
 
-    // TODO: consultar https://stackoverflow.com/questions/6242268/repeat-a-task-with-a-time-delay
-    //  e implementar de forma mais correta o som repetido.
-
     public Runnable runnable = new Runnable() {
         @Override
         public void run() {
-            genTone();
-            if (flag) {
-                playSound();
+            if (audioTrack != null) {
+                audioTrack.release();
             }
+
+            audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC,
+                    sampleRate, AudioFormat.CHANNEL_CONFIGURATION_MONO,
+                    AudioFormat.ENCODING_PCM_16BIT, numSamples,
+                    AudioTrack.MODE_STREAM);
+            audioTrack.play();
+            if(flag){
+                audioTrack.write(generatedSnd, 0, generatedSnd.length);
+            }else{
+                audioTrack.stop();
+                audioTrack.release();
+            }
+
+
             handler.postDelayed(runnable, rate * 300);
         }
     };
 
-
     private class MyCanvasView extends MyView {
+
+        public PontoCampo posicaoCampo;
 
         public MyCanvasView(Context context) {
             super(context);
-
-
         }
 
         @Override
@@ -124,20 +120,25 @@ public class TreinoFreqActivity extends BaseActivity {
             int x = (int) event.getX();
             int y = (int) event.getY();
 
-            PontoCampo point = campo.converter(x, y);
+            PontoCampo ponto = campo.converter(x, y);
 
-            distance = Math.sqrt(Math.pow(point.x, 2) + Math.pow(point.y, 2));
+            flag = true;
+
+            runnable.run();
+            distance = Math.sqrt(Math.pow(ponto.x, 2) + Math.pow(ponto.y, 2));
 
 
+            freqOfTone = Math.abs(Math.log(distance / 100.0)) * 100; // depois inverter
 
-
-            freqOfTone = distance * 100.0;
             sound(distance);
+
+            genTone();
 
 
             return false;
-        }
 
     }
+
+}
 
 }

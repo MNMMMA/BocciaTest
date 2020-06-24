@@ -99,10 +99,11 @@ public class TestBepActivity extends BaseActivity {
             // distance = Math.sqrt(Math.pow(getH(x), 2));
             //distance = getH(y); // TODO: remover esta implementação provisória
 
-            angle = Angle(realX, realY);
-            //mp.setVolume((float) (Math.cos(angle) +1)/2,(1-(float) Math.cos(angle))/2);
-            distance = Math.sqrt(Math.pow(ponto.x, 2));
+            double distance = Math.sqrt(Math.pow(Math.abs(ponto.x), 2) + Math.pow(Math.abs(ponto.y), 2));
 
+            angle = (int) (180.0 * Math.atan2(ponto.y,ponto.x) / Math.PI);
+
+            mp.setVolume((float) (Math.cos(angle) +1)/2,(1-(float) Math.cos(angle))/2);
             sound(distance);
 
             return false;

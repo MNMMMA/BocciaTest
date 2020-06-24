@@ -28,6 +28,7 @@ public class BocciaSoundByte extends BaseActivity {
     boolean oFlag = false;
     private MediaPlayer mp = new MediaPlayer();
     private Handler handler = new Handler();
+    int angle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,9 +121,12 @@ public class BocciaSoundByte extends BaseActivity {
                     runnable.run();
                     oFlag = false;
                 }
-                Double nRate = Math.sqrt(Math.pow(dy, 2));
+                double distance = Math.sqrt(Math.pow(Math.abs(dx), 2) + Math.pow(Math.abs(dy), 2));
 
-                sound(nRate);
+                angle = (int) (180.0 * Math.atan2(dy,dx) / Math.PI);
+
+                sound(distance);
+                mp.setVolume((float) (Math.cos(angle) +1)/2,(1-(float) Math.cos(angle))/2);
 
             }
 

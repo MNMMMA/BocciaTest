@@ -60,10 +60,6 @@ public class FreqPlayActivity extends BaseActivity {
         }
     }
 
-    void playSound(){
-
-
-    }
 
     @Override
     public void onDestroy() {
@@ -87,16 +83,14 @@ public class FreqPlayActivity extends BaseActivity {
              audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC,
                      sampleRate, AudioFormat.CHANNEL_CONFIGURATION_MONO,
                      AudioFormat.ENCODING_PCM_16BIT, numSamples,
-                     AudioTrack.MODE_STATIC);
-
+                     AudioTrack.MODE_STREAM);
+            audioTrack.play();
             if (flag) {
                 audioTrack.write(generatedSnd, 0, generatedSnd.length);
-                audioTrack.play();
             }else{
                 audioTrack.stop();
                 audioTrack.release();
             }
-
             handler.postDelayed(runnable, rate * 300);
         }
     };
@@ -131,6 +125,8 @@ public class FreqPlayActivity extends BaseActivity {
 
             if (Math.abs(dy) < tolerancia) {
                 flag = false;
+                audioTrack.stop();
+                audioTrack.release();
 
                 Toast.makeText(getApplicationContext(), A_BOLA_ESTÁ_AÍ_MESMO, Toast.LENGTH_SHORT).show();
                 t1.speak(A_BOLA_ESTÁ_AÍ_MESMO, TextToSpeech.QUEUE_FLUSH, null);
@@ -141,8 +137,9 @@ public class FreqPlayActivity extends BaseActivity {
                     oFlag = false;
                 }
 
-                Double nRate = Math.sqrt(Math.pow(dy, 2));
-                //freqOfTone = Math.log(100.0/nRate) ; // depois inverter
+                double nRate = Math.sqrt(Math.pow(dy, 2));
+                freqOfTone = Math.abs(Math.log(nRate/100.0))*100 ; // depois inverter
+
                 sound(nRate);
 
                 genTone();
