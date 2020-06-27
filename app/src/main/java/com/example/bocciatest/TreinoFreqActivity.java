@@ -14,6 +14,7 @@ import android.view.MotionEvent;
 import android.widget.Toast;
 
 import com.example.bocciatest.campo.PontoCampo;
+import com.example.bocciatest.campo.PontoEcra;
 
 public class TreinoFreqActivity extends BaseActivity {
 
@@ -93,7 +94,6 @@ public class TreinoFreqActivity extends BaseActivity {
             if(flag){
                 audioTrack.write(generatedSnd, 0, generatedSnd.length);
             }else{
-                audioTrack.stop();
                 audioTrack.release();
             }
 
@@ -120,21 +120,23 @@ public class TreinoFreqActivity extends BaseActivity {
             int x = (int) event.getX();
             int y = (int) event.getY();
 
-            PontoCampo ponto = campo.converter(x, y);
+            flag = false;
+            int realX = (int) (campo.maxEcraY - y);
+            int realY = (int) (campo.maxEcraX - x);
 
-            flag = true;
+            PontoCampo ponto = campo.converter(new PontoEcra(realX, realY));
+
 
             runnable.run();
-            distance = Math.sqrt(Math.pow(ponto.x, 2) + Math.pow(ponto.y, 2));
 
+            double nRate = Math.sqrt(Math.pow(ponto.y, 2));
+            freqOfTone = Math.abs(Math.log(nRate/100.0))*100 ; // depois inverter
 
-            freqOfTone = Math.abs(Math.log(distance / 100.0)) * 100; // depois inverter
+           // distance = Math.sqrt(Math.pow(ponto.x, 2) + Math.pow(ponto.y, 2));
 
-            sound(distance);
+            sound(nRate);
 
             genTone();
-
-
             return false;
 
     }
