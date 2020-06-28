@@ -93,10 +93,7 @@ public class TreinoFreqActivity extends BaseActivity {
             audioTrack.play();
             if(flag){
                 audioTrack.write(generatedSnd, 0, generatedSnd.length);
-            }else{
-                audioTrack.release();
             }
-
 
             handler.postDelayed(runnable, rate * 300);
         }
@@ -121,8 +118,8 @@ public class TreinoFreqActivity extends BaseActivity {
             int y = (int) event.getY();
 
             flag = false;
-            int realX = (int) (campo.maxEcraY - y);
-            int realY = (int) (campo.maxEcraX - x);
+            int realY = (int) (campo.maxEcraY - y);
+            int realX = (int) (campo.maxEcraX - x);
 
             PontoCampo ponto = campo.converter(new PontoEcra(realX, realY));
 
@@ -137,6 +134,7 @@ public class TreinoFreqActivity extends BaseActivity {
             sound(nRate);
 
             genTone();
+
             return false;
 
     }

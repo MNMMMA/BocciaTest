@@ -30,12 +30,6 @@ public class FreqPlayActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(new MyCanvasView(this));
-    }
-
-
-    @Override
-    protected void onResume() {
-        super.onResume();
         genTone();
         runnable.run();
     }
@@ -90,6 +84,8 @@ public class FreqPlayActivity extends BaseActivity {
             }else{
                 audioTrack.stop();
                 audioTrack.release();
+                audioTrack.flush();
+                handler.removeCallbacks(runnable);
             }
             handler.postDelayed(runnable, rate * 300);
         }
@@ -127,6 +123,8 @@ public class FreqPlayActivity extends BaseActivity {
                 flag = false;
                 audioTrack.stop();
                 audioTrack.release();
+                audioTrack.flush();
+                handler.removeCallbacks(runnable);
 
                 Toast.makeText(getApplicationContext(), A_BOLA_ESTÁ_AÍ_MESMO, Toast.LENGTH_SHORT).show();
                 t1.speak(A_BOLA_ESTÁ_AÍ_MESMO, TextToSpeech.QUEUE_FLUSH, null);

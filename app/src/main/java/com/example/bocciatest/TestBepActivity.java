@@ -90,14 +90,11 @@ public class TestBepActivity extends BaseActivity {
 
 
             flag = false;
-            int realX = (int) (campo.maxEcraY - y);
-            int realY = (int) (campo.maxEcraX - x);
+            int realX = (int) (campo.maxEcraX - x);
+            int realY = (int) (campo.maxEcraY - y);
 
             PontoCampo ponto = campo.converter(new PontoEcra(realX, realY));
 
-            // TODO: implementar com X e Y
-            // distance = Math.sqrt(Math.pow(getH(x), 2));
-            //distance = getH(y); // TODO: remover esta implementação provisória
 
             double distance = Math.sqrt(Math.pow(Math.abs(ponto.x), 2) + Math.pow(Math.abs(ponto.y), 2));
 

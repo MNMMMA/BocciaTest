@@ -22,20 +22,20 @@ public class Campo {
 
     public PontoEcra converter(PontoCampo fp) {
         double x = maxEcraX * fp.x / maxCampoX;
-        double y = maxEcraY * (1 - fp.y / maxCampoY);
+        double y = maxEcraY * ( fp.y / maxCampoY);
         return new PontoEcra((int) x, (int) y);
     }
 
     public PontoCampo converter(PontoEcra sp) {
         double x = (double) sp.x;
         double y = (double) sp.y;
-        return new PontoCampo(x * maxCampoX / maxEcraX, (1 - y / maxEcraY) * maxCampoY);
+        return new PontoCampo(x * maxCampoX / maxEcraX, (y / maxEcraY) * maxCampoY);
     }
 
     public PontoCampo converter(int ecraX, int ecraY) {
         double x = (double) ecraX;
         double y = (double) ecraY;
-        return new PontoCampo(x * maxCampoX / maxEcraX, (1 - y / maxEcraY) * maxCampoY);
+        return new PontoCampo(x * maxCampoX / maxEcraX, ( y / maxEcraY) * maxCampoY);
     }
 
     public PontoCampo getRandomPoint() {
