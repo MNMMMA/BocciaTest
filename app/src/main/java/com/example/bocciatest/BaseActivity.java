@@ -25,7 +25,7 @@ public class BaseActivity extends AppCompatActivity {
     protected TextToSpeech t1;
     public long rate;
     public static final String A_BOLA_ESTÁ_AÍ_MESMO = "A bola está aí mesmo";
-    public static final String O_DEDO_ESTÁ_À_2_F_METROS_CENTIMETROS_NA_HORIZONTAL_E_2_F_METROS_CENTIMETROS_NA_VERTICAL = "O dedo está à %.2f metros centimetros na horizontal e %.2f metros centimetros na vertical";
+    public static final String O_DEDO_ESTÁ_À_1_F_METROS_CENTIMETROS_NA_HORIZONTAL_E_1_F_METROS_CENTIMETROS_NA_VERTICAL = "O dedo está à %.1f metros centimetros na horizontal e %.1f metros centimetros na vertical";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

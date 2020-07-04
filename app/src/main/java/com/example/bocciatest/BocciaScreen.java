@@ -42,6 +42,7 @@ public class BocciaScreen extends BaseActivity {
         public MyCanvasView(Context context) {
 
             super(context, BocciaScreen.this.campo);
+
         }
 
        /* @Override
@@ -80,18 +81,32 @@ public class BocciaScreen extends BaseActivity {
 
                 // TODO: substituir todas as strings hard-coded por referências a resources
                 if (dx > tolerancia) {
-                    dirH = String.format(Locale.getDefault(), "%.2f metros centimetros à direita", dx);
+                    if (dx<1){
+                        dirH = String.format(Locale.getDefault(), "%.1f centimetros à esquerda", dx);
+                    }else{
+                        dirH = String.format(Locale.getDefault(), "%.1f metros centimetros à esquerda", dx);
+                    }
                 } else if (dx < -tolerancia) {
-                    dirH = String.format(Locale.getDefault(), "%.2f metros centimetros à esquerda", -dx);
-                    dx = -dx;
+                    if (-dx<1){
+                        dirH = String.format(Locale.getDefault(), "%.1f centimetros à direita", -dx);
+                    }else{
+                        dirH = String.format(Locale.getDefault(), "%.1f metros centimetros à direita", -dx);
+                    }
                 } else {
                     dirH = "nessa coluna";
                 }
                 if (dy > tolerancia) {
-                    dirV = String.format(Locale.getDefault(), "%.2f metros centimetros acima", dy);
+                    if (dy<1){
+                        dirV = String.format(Locale.getDefault(), "%.1f centimetros acima", dy);
+                    }else{
+                        dirV = String.format(Locale.getDefault(), "%.1f metros centimetros acima", dy);
+                    }
                 } else if (dy < -tolerancia) {
-                    dirV = String.format(Locale.getDefault(), "%.2f metros centimetros abaixo", -dy);
-
+                    if (-dy<1){
+                        dirV = String.format(Locale.getDefault(), "%.1f centimetros abaixo", -dy);
+                    }else{
+                        dirV = String.format(Locale.getDefault(), "%.1f metros centimetros abaixo", -dy);
+                    }
                 } else {
                     dirV = "nessa linha";
                 }

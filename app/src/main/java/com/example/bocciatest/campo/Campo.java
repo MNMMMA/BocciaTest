@@ -8,11 +8,14 @@ public class Campo {
     public final int maxEcraY;
     public final double maxCampoX = 6;
     public final double maxCampoY = 10;
+    public final double midEcraX;
     private final Random rand = new Random();
 
     public Campo(int maxEcraX, int maxEcraY) {
         this.maxEcraX = maxEcraX;
         this.maxEcraY = maxEcraY;
+        midEcraX = maxEcraX/2.0;
+
     }
 
     @Override
