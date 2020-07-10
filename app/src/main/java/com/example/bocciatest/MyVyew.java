@@ -17,14 +17,11 @@ import android.widget.Toast;
 
 class MyView extends View {
     Paint paint;
-    Bitmap board;
-    Rect rect;
-    RectF rectF;
+
 
     public MyView(Context context) {
         super(context);
         paint = new Paint();
-        board = BitmapFactory.decodeResource(getResources(),R.drawable.field1);
 
     }
 
@@ -36,7 +33,6 @@ class MyView extends View {
         paint.setColor(Color.WHITE);
 
 
-        canvas.drawBitmap(board,0,0,null);
     }
 
 }

@@ -1,6 +1,7 @@
 package com.example.bocciatest;
 
 import android.content.Context;
+import android.graphics.Canvas;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.view.MotionEvent;
@@ -27,10 +28,11 @@ public class TestTTSActivity extends BaseActivity {
             super(context);
         }
 
-       /* @Override
+        @Override
         protected void onDraw(Canvas canvas) {
             super.onDraw(canvas);
-        }*/
+            canvas.drawBitmap(resizedBitmap,-50,50,null);
+        }
 
         @Override
         public boolean onTouchEvent(MotionEvent event) {
@@ -50,7 +52,11 @@ public class TestTTSActivity extends BaseActivity {
             PontoCampo ponto = campo.converter(new PontoEcra(realX,realY));
 
             String toSpeak = String.format(O_DEDO_ESTÁ_À_1_F_METROS_CENTIMETROS_NA_HORIZONTAL_E_1_F_METROS_CENTIMETROS_NA_VERTICAL, ponto.x, ponto.y);
-
+            String cpInv= "Campo inválido";
+            if(ponto.x < 0){
+                t1.speak(cpInv, TextToSpeech.QUEUE_FLUSH, null);
+                return false;
+            }
              Toast.makeText(getApplicationContext(), toSpeak, Toast.LENGTH_SHORT).show();
             t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
 

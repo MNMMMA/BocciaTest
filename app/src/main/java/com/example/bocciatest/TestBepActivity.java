@@ -3,6 +3,7 @@ package com.example.bocciatest;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.media.MediaPlayer;
@@ -37,7 +38,7 @@ public class TestBepActivity extends BaseActivity {
         setContentView(new MyCanvasView(this));
         mp = MediaPlayer.create(TestBepActivity.this, R.raw.bep);
 
-        runnable.run();
+
     }
 
 
@@ -77,6 +78,11 @@ public class TestBepActivity extends BaseActivity {
             super(context);
 
         }
+        @Override
+        protected void onDraw(Canvas canvas) {
+            super.onDraw(canvas);
+            canvas.drawBitmap(resizedBitmap,-50,50,null);
+        }
 
         @Override
         public boolean onTouchEvent(MotionEvent event) {
@@ -85,6 +91,9 @@ public class TestBepActivity extends BaseActivity {
             int x = (int) event.getX();
             int y = (int) event.getY();
 
+            if (flag){
+                runnable.run();
+            }
             if (event.getAction() != MotionEvent.ACTION_DOWN)
                 return false;
 

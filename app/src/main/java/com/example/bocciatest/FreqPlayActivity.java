@@ -100,7 +100,9 @@ public class FreqPlayActivity extends BaseActivity {
 
         @Override
         protected void onDraw(Canvas canvas) {
+            canvas.drawBitmap(resizedBitmap,-50,50,null);
             super.onDraw(canvas);
+
             sound(posicaoCampo.y);
         }
 

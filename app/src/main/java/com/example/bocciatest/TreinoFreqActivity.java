@@ -106,6 +106,11 @@ public class TreinoFreqActivity extends BaseActivity {
         public MyCanvasView(Context context) {
             super(context);
         }
+        @Override
+        protected void onDraw(Canvas canvas) {
+            super.onDraw(canvas);
+            canvas.drawBitmap(resizedBitmap,-50,50,null);
+        }
 
         @Override
         public boolean onTouchEvent(MotionEvent event) {

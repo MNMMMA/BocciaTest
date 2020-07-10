@@ -1,5 +1,7 @@
 package com.example.bocciatest;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,8 +27,9 @@ public class BaseActivity extends AppCompatActivity {
     protected TextToSpeech t1;
     public long rate;
     public static final String A_BOLA_ESTÁ_AÍ_MESMO = "A bola está aí mesmo";
-    public static final String O_DEDO_ESTÁ_À_1_F_METROS_CENTIMETROS_NA_HORIZONTAL_E_1_F_METROS_CENTIMETROS_NA_VERTICAL = "O dedo está à %.1f metros centimetros na horizontal e %.1f metros centimetros na vertical";
-
+    public static final String O_DEDO_ESTÁ_À_1_F_METROS_CENTIMETROS_NA_HORIZONTAL_E_1_F_METROS_CENTIMETROS_NA_VERTICAL = "O dedo está à %.1f metros na horizontal e %.1f metros na vertical";
+    public Bitmap resizedBitmap;
+    public final Locale myLocale = new Locale("pt", "PT");
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -39,7 +42,20 @@ public class BaseActivity extends AppCompatActivity {
         display.getSize(size);
         campo = new Campo(size.x, size.y);
 
-        final Locale myLocale = new Locale("pt", "PT");
+        Bitmap board = BitmapFactory.decodeResource(getResources(),R.drawable.truefield);
+
+        int outWidth;
+        int outHeight;
+        int inWidth = board.getWidth();
+        int inHeight = board.getHeight();
+        if(size.x > size.y){
+            outWidth = size.x;
+            outHeight = (10 * size.x) / 6; // fazer a divisao do power point
+        } else {
+            outHeight = size.y;
+            outWidth = (6 * size.y) / 10;
+        }
+        resizedBitmap = Bitmap.createScaledBitmap(board, outWidth,outHeight, false);
 
         t1 = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
             @Override

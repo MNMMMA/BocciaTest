@@ -37,7 +37,6 @@ public class BocciaSoundByte extends BaseActivity {
         setContentView(new MyCanvasView(this));
         mp = MediaPlayer.create(BocciaSoundByte.this, R.raw.bep);
 
-        runnable.run();
     }
 
     @Override
@@ -89,6 +88,7 @@ public class BocciaSoundByte extends BaseActivity {
 
         @Override
         protected void onDraw(Canvas canvas) {
+            canvas.drawBitmap(resizedBitmap,-50,50,null);
             super.onDraw(canvas);
 
             sound(posicaoCampo.y);
@@ -99,6 +99,9 @@ public class BocciaSoundByte extends BaseActivity {
 
             if (event.getAction() != MotionEvent.ACTION_DOWN) {
                 return false;
+            }
+            if (flag){
+                runnable.run();
             }
 
             int x = (int) event.getX();
@@ -114,7 +117,6 @@ public class BocciaSoundByte extends BaseActivity {
 
                 Toast.makeText(getApplicationContext(), A_BOLA_ESTÁ_AÍ_MESMO, Toast.LENGTH_SHORT).show();
                 t1.speak(A_BOLA_ESTÁ_AÍ_MESMO, TextToSpeech.QUEUE_FLUSH, null);
-                handler.removeCallbacks(runnable);
                 oFlag = true;
             } else {
                 if (oFlag){
